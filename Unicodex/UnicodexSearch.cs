@@ -8,7 +8,7 @@ using Unicodex.Model;
 
 namespace Unicodex
 {
-    public class Unicodex
+    public class UnicodexSearch
     {
         private Cache[] Caches = new Cache[]
         {
@@ -19,7 +19,7 @@ namespace Unicodex
             new FirstLetterOfAllWordsCache(),
         };
 
-        public Unicodex()
+        public UnicodexSearch()
         {
             using (StringReader unicodeDataLines = new StringReader(Properties.Resources.UnicodeData))
             {

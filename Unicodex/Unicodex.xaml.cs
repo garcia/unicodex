@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 
 namespace Unicodex
 {
@@ -11,16 +13,38 @@ namespace Unicodex
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Unicodex unicodex;
+        private UnicodexSearch unicodex;
 
         private ObservableCollection<View.Character> Results;
 
         public MainWindow()
         {
-            unicodex = new Unicodex();
+            unicodex = new UnicodexSearch();
             InitializeComponent();
-            textBox.TextChanged += TextBox_TextChanged;
-            textBox.PreviewKeyDown += TextBox_PreviewKeyDown;
+        }
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+            HwndSource source = PresentationSource.FromVisual(this) as HwndSource;
+            source.AddHook(WndProc);
+
+            IntPtr hWnd = (IntPtr)new WindowInteropHelper(Application.Current.MainWindow).Handle.ToInt32();
+            Hotkey.RegisterHotKey(hWnd, 0, Hotkey.MOD_NOREPEAT | Hotkey.MOD_CONTROL | Hotkey.MOD_SHIFT, KeyInterop.VirtualKeyFromKey(Key.U));
+        }
+
+        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            if (msg == 0x312)
+            {
+                MessageBox.Show("caught global hotkey");
+            }
+            return (IntPtr)0;
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            Hotkey.UnregisterHotKey((IntPtr)new WindowInteropHelper(Application.Current.MainWindow).Handle.ToInt32(), 0);
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -30,7 +54,7 @@ namespace Unicodex
 
         }
 
-        private void TextBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (Results != null)
             {

@@ -5,7 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Unicodex"
         mc:Ignorable="d"
-        Title="Unicodex" Height="360" Width="640">
+        Title="Unicodex"
+        Closing="Window_Closing"
+        Height="360"
+        Width="640">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="Bool2VisibilityConverter" />
     </Window.Resources>
@@ -14,7 +17,14 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <TextBox x:Name="textBox" TextWrapping="Wrap" Text="" VerticalAlignment="Top" FontSize="16" Padding="5" />
+        <TextBox
+            x:Name="textBox"
+            TextWrapping="Wrap"
+            VerticalAlignment="Top"
+            FontSize="16"
+            Padding="5"
+            TextChanged="TextBox_TextChanged"
+            PreviewKeyDown="TextBox_PreviewKeyDown" />
         <ListView Name="SearchResults" Grid.IsSharedSizeScope="True" AlternationCount="2" Grid.Row="1">
             <ListView.ItemTemplate>
                 <DataTemplate>
@@ -27,7 +37,12 @@
                             <RowDefinition />
                             <RowDefinition />
                         </Grid.RowDefinitions>
-                        <Polygon Points="0,0 5,5 0,10" Fill="Blue" Grid.RowSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" Visibility="{Binding Selected, Converter={StaticResource Bool2VisibilityConverter}}" />
+                        <Polygon Points="0,0 5,5 0,10"
+                                 Fill="Blue"
+                                 Grid.RowSpan="2"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsSelected, Converter={StaticResource Bool2VisibilityConverter}, Mode=OneWay}" />
                         <TextBlock Text="{Binding Value}" FontSize="36" HorizontalAlignment="Center" Padding="5">
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}">
@@ -52,8 +67,20 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="ListViewItem">
-                                <Border BorderThickness="{TemplateBinding Border.BorderThickness}" Padding="{TemplateBinding Control.Padding}" BorderBrush="{TemplateBinding Border.BorderBrush}" Background="{TemplateBinding Panel.Background}" Name="Bd" SnapsToDevicePixels="True">
-                                    <ContentPresenter Content="{TemplateBinding ContentControl.Content}" ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}" ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}" HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                                <Border
+                                    BorderThickness="{TemplateBinding Border.BorderThickness}"
+                                    Padding="{TemplateBinding Control.Padding}"
+                                    BorderBrush="{TemplateBinding Border.BorderBrush}"
+                                    Background="{TemplateBinding Panel.Background}"
+                                    Name="Bd"
+                                    SnapsToDevicePixels="True">
+                                    <ContentPresenter
+                                        Content="{TemplateBinding ContentControl.Content}"
+                                        ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
+                                        ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
+                                        HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                                        VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+                                        SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <MultiTrigger>

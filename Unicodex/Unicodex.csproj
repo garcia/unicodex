@@ -56,7 +56,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Cache.cs" />
-    <Compile Include="Unicodex.cs" />
+    <Compile Include="Hotkey.cs" />
+    <Compile Include="UnicodexSearch.cs" />
     <Compile Include="View.cs" />
     <Page Include="Unicodex.xaml">
       <Generator>MSBuild:Compile</Generator>
