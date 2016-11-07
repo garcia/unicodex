@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace Unicodex.Model
 {
+    public abstract class SplitString
+    {
+        public abstract string Unsplit { get; }
+        public abstract string[] Split { get; }
+    }
+
     public class UnicodeDataEntry
     {
         public string Codepoint { get; private set; }
@@ -45,12 +51,15 @@ namespace Unicodex.Model
         }
     }
 
-    public class Character
+    public class Character : SplitString
     {
         public string Value { get; private set; }
         public int Codepoint { get; private set; }
         public string Name { get; private set; }
         public string[] NameWords { get; private set; }
+
+        public override string Unsplit { get { return Name; } }
+        public override string[] Split { get { return NameWords; } }
 
         public Character(UnicodeDataEntry entry)
         {
@@ -68,6 +77,39 @@ namespace Unicodex.Model
             }
 
             NameWords = Name.Split(new char[] { ' ' });
+        }
+    }
+
+    public class Query : SplitString
+    {
+        public string QueryText { get; private set; }
+        public string[] QueryWords { get; private set; }
+
+        public override string Unsplit { get { return QueryText; } }
+        public override string[] Split { get { return QueryWords; } }
+
+        public Query(string text)
+        {
+            QueryWords = text.ToUpper().Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
+            QueryText = string.Join(" ", QueryWords);
+        }
+
+        public bool Matches(Character c)
+        {
+            foreach (string queryWord in QueryWords)
+            {
+                bool matchesQueryWord = false;
+                foreach (string nameWord in c.NameWords)
+                {
+                    if (nameWord.StartsWith(queryWord))
+                    {
+                        matchesQueryWord = true;
+                        break;
+                    }
+                }
+                if (!matchesQueryWord) return false;
+            }
+            return true;
         }
     }
 }

@@ -6,51 +6,120 @@
         xmlns:local="clr-namespace:Unicodex"
         mc:Ignorable="d"
         Title="Unicodex" Height="360" Width="640">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="Bool2VisibilityConverter" />
+    </Window.Resources>
     <Grid FocusManager.FocusedElement="{Binding ElementName=textBox}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <TextBox x:Name="textBox" TextWrapping="Wrap" Text="" VerticalAlignment="Top" FontSize="16" Padding="5" />
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
-            <ItemsControl Name="icSearchResults" Grid.IsSharedSizeScope="True" AlternationCount="2">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Name="Result">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" SharedSizeGroup="A" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-                            <Polygon Points="0,0 5,5 0,10" Fill="Blue" Grid.RowSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                            <TextBlock Text="{Binding Value}" FontSize="36" HorizontalAlignment="Center" Padding="5">
-                                <TextBlock.Style>
-                                    <Style TargetType="{x:Type TextBlock}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding HasSpecialValue}" Value="true">
-                                                <Setter Property="Foreground" Value="Blue" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                            <TextBlock Text="{Binding Codepoint}" Grid.Row="1" FontSize="12" HorizontalAlignment="Center" Padding="5" Foreground="#666666" />
-                            <TextBlock Text="{Binding Name}" Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Center" FontSize="16" />
-                        </Grid>
-                        <DataTemplate.Triggers>
-                            <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                                <Setter Property="Background" Value="#f0f0f0" TargetName="Result" />
-                            </Trigger>
-                            <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                                <Setter Property="Background" Value="#f8f8f8" TargetName="Result" />
-                            </Trigger>
-                        </DataTemplate.Triggers>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
+        <ListView Name="SearchResults" Grid.IsSharedSizeScope="True" AlternationCount="2" Grid.Row="1">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Name="Result">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="A" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Polygon Points="0,0 5,5 0,10" Fill="Blue" Grid.RowSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" Visibility="{Binding Selected, Converter={StaticResource Bool2VisibilityConverter}}" />
+                        <TextBlock Text="{Binding Value}" FontSize="36" HorizontalAlignment="Center" Padding="5">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding HasSpecialValue}" Value="true">
+                                            <Setter Property="Foreground" Value="Blue" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <TextBlock Text="{Binding Codepoint}" Grid.Row="1" FontSize="12" HorizontalAlignment="Center" Padding="5" Foreground="#666666" />
+                        <TextBlock Text="{Binding Name}" Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Center" FontSize="16" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.Resources>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="Margin" Value="-4,0" />
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListViewItem">
+                                <Border BorderThickness="{TemplateBinding Border.BorderThickness}" Padding="{TemplateBinding Control.Padding}" BorderBrush="{TemplateBinding Border.BorderBrush}" Background="{TemplateBinding Panel.Background}" Name="Bd" SnapsToDevicePixels="True">
+                                    <ContentPresenter Content="{TemplateBinding ContentControl.Content}" ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}" ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}" HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="UIElement.IsMouseOver">
+                                                <Condition.Value>True</Condition.Value>
+                                            </Condition>
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Panel.Background" TargetName="Bd">
+                                            <Setter.Value>
+                                                <SolidColorBrush>#e8e8e8</SolidColorBrush>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </MultiTrigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="Selector.IsSelectionActive">
+                                                <Condition.Value>False</Condition.Value>
+                                            </Condition>
+                                            <Condition Property="Selector.IsSelected">
+                                                <Condition.Value>True</Condition.Value>
+                                            </Condition>
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Panel.Background" TargetName="Bd">
+                                            <Setter.Value>
+                                                <SolidColorBrush>#e0e0e0</SolidColorBrush>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </MultiTrigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="Selector.IsSelectionActive">
+                                                <Condition.Value>True</Condition.Value>
+                                            </Condition>
+                                            <Condition Property="Selector.IsSelected">
+                                                <Condition.Value>True</Condition.Value>
+                                            </Condition>
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Panel.Background" TargetName="Bd">
+                                            <Setter.Value>
+                                                <SolidColorBrush>#e0e0e0</SolidColorBrush>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </MultiTrigger>
+                                    <Trigger Property="UIElement.IsEnabled">
+                                        <Setter Property="TextElement.Foreground" TargetName="Bd">
+                                            <Setter.Value>
+                                                <DynamicResource ResourceKey="{x:Static SystemColors.GrayTextBrushKey}" />
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Trigger.Value>False</Trigger.Value>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                            <Setter Property="Background" Value="#f0f0f0" />
+                        </Trigger>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                            <Setter Property="Background" Value="#f8f8f8" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.Resources>
+        </ListView>
     </Grid>
 </Window>
