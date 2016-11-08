@@ -36,20 +36,20 @@ namespace Unicodex
             notifyIcon.Visible = true;
             notifyIcon.DoubleClick += delegate (object sender, EventArgs args)
             {
-                this.Show();
-                this.WindowState = WindowState.Normal;
+                Show();
+                WindowState = WindowState.Normal;
             };
 
             // Create right-click context menu for tray icon
             System.Windows.Forms.MenuItem menuItemShow = new System.Windows.Forms.MenuItem();
             menuItemShow.Index = 0;
             menuItemShow.Text = "&Show";
-            menuItemShow.Click += new System.EventHandler(this.menuItemShow_Click);
+            menuItemShow.Click += new System.EventHandler(menuItemShow_Click);
 
             System.Windows.Forms.MenuItem menuItemExit = new System.Windows.Forms.MenuItem();
             menuItemExit.Index = 1;
             menuItemExit.Text = "E&xit";
-            menuItemExit.Click += new System.EventHandler(this.menuItemExit_Click);
+            menuItemExit.Click += new System.EventHandler(menuItemExit_Click);
 
             System.Windows.Forms.ContextMenu contextMenu = new System.Windows.Forms.ContextMenu();
             contextMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] { menuItemShow, menuItemExit });
@@ -58,7 +58,7 @@ namespace Unicodex
 
         private void menuItemShow_Click(object sender, EventArgs e)
         {
-            this.Show();
+            Show();
         }
 
         private void menuItemExit_Click(object sender, EventArgs e)
@@ -75,15 +75,20 @@ namespace Unicodex
             source.AddHook(WndProc);
 
             // Register hotkey (TODO: make user-configurable)
-            IntPtr hWnd = (IntPtr)new WindowInteropHelper(Application.Current.MainWindow).Handle.ToInt32();
+            IntPtr hWnd = getMainWindowHwnd();
             Win32.RegisterHotKey(hWnd, 0, Win32.MOD_NOREPEAT | Win32.MOD_CONTROL | Win32.MOD_SHIFT, KeyInterop.VirtualKeyFromKey(Key.U));
+        }
+
+        private IntPtr getMainWindowHwnd()
+        {
+            return (IntPtr)new WindowInteropHelper(Application.Current.MainWindow).Handle.ToInt32();
         }
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             if (msg == Win32.WM_HOTKEY)
             {
-                this.Show();
+                Show();
             }
             return (IntPtr)0;
         }
@@ -94,7 +99,7 @@ namespace Unicodex
             {
                 if (e.Key == Key.Escape)
                 {
-                    this.Hide();
+                    Hide();
                 }
             }
         }
@@ -178,15 +183,15 @@ namespace Unicodex
             int topOffset = -5;
             int bottomOffset = 5;
 
-            int newRight = left + (int)this.ActualWidth + leftOffset;
-            int newBottom = bottom + (int)this.ActualHeight + bottomOffset;
+            int newRight = left + (int)ActualWidth + leftOffset;
+            int newBottom = bottom + (int)ActualHeight + bottomOffset;
             if (newRight > workArea.right)
             {
-                left -= (int)this.ActualWidth;
+                left -= (int)ActualWidth;
             }
             if (newBottom > workArea.bottom)
             {
-                top -= (int)this.ActualHeight;
+                top -= (int)ActualHeight;
                 top += topOffset;
             }
             else
@@ -195,13 +200,13 @@ namespace Unicodex
                 top += bottomOffset;
             }
 
-            this.Left = Math.Max(left + leftOffset, 0);
-            this.Top = Math.Max(top, 0);
+            Left = Math.Max(left + leftOffset, 0);
+            Top = Math.Max(top, 0);
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            this.Hide();
+            Hide();
             e.Cancel = true;
         }
 
@@ -214,7 +219,7 @@ namespace Unicodex
 
         private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (results != null)
+            if (results != null && results.Count > 0)
             {
                 if (e.IsDown)
                 {
@@ -227,8 +232,46 @@ namespace Unicodex
                     {
                         UpdateSelectedResult(SearchResults.SelectedIndex - 1);
                     }
+                    // Use Enter to send the selected character
+                    else if (e.Key == Key.Enter)
+                    {
+                        SendCharacter(results[SearchResults.SelectedIndex]);
+                    }
                 }
             }
+        }
+
+        private void SendCharacter(View.Character c)
+        {
+            // Build key data for SendInput
+            // FIXME: astral plane characters break in Notepad++
+            Win32.INPUT[] inputs = new Win32.INPUT[c.Value.Length];
+            int iChr = 0;
+            foreach (char chr in c.Value)
+            {
+                inputs[iChr] = new Win32.INPUT();
+                inputs[iChr].type = Win32.InputType.KEYBOARD;
+                inputs[iChr].U.ki = new Win32.KEYBDINPUT();
+                inputs[iChr].U.ki.wVk = 0;
+                inputs[iChr].U.ki.wScan = (short)chr;
+                inputs[iChr].U.ki.dwFlags = Win32.KEYEVENTF.UNICODE;
+                inputs[iChr].U.ki.time = 0;
+                iChr++;
+            }
+
+            // Send keys as soon as Unicodex is done hiding itself
+            EventHandler handler = null;
+            handler = delegate(object sender, EventArgs e)
+            {
+                uint result = Win32.SendInput((uint)c.Value.Length, inputs, Marshal.SizeOf(inputs[0]));
+                if (result == 0)
+                {
+                    throw new Win32Exception();
+                }
+                Deactivated -= handler;
+            };
+            Deactivated += handler;
+            Hide();
         }
 
         private void UpdateSelectedResult(int selected)
