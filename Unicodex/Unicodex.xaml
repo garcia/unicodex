@@ -60,168 +60,222 @@
         </Style>
     </Window.Resources>
 
-    <TabControl x:Name="tabControl" Padding="0" BorderThickness="0">
-        <TabItem Style="{StaticResource TabHeaderNormalStyle}">
-            <TabItem.Header>
-                <StackPanel Style="{StaticResource TabHeaderStackPanelStyle}">
-                    <TextBlock Text="&#xE094;" Style="{StaticResource TabHeaderIconStyle}" />
-                    <TextBlock Text="Search" Grid.Column="2" Style="{StaticResource TabHeaderTextStyle}" />
-                </StackPanel>
-            </TabItem.Header>
+    <Grid>
+        <TabControl x:Name="tabControl" Padding="0" BorderThickness="0">
 
-            <Grid FocusManager.FocusedElement="{Binding ElementName=textBox}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
+            <TabItem Style="{StaticResource TabHeaderNormalStyle}">
+                <TabItem.Header>
+                    <StackPanel Style="{StaticResource TabHeaderStackPanelStyle}">
+                        <TextBlock Text="&#xE094;" Style="{StaticResource TabHeaderIconStyle}" />
+                        <TextBlock Text="Search" Grid.Column="2" Style="{StaticResource TabHeaderTextStyle}" />
+                    </StackPanel>
+                </TabItem.Header>
 
-                <TextBox
-                    x:Name="textBox"
-                    TextWrapping="Wrap"
-                    VerticalAlignment="Top"
-                    FontSize="16"
-                    Padding="5"
-                    TextChanged="TextBox_TextChanged"
-                    PreviewKeyDown="TextBox_PreviewKeyDown" />
+                <Grid FocusManager.FocusedElement="{Binding ElementName=textBox}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
 
-                <ListView Name="SearchResults" Grid.IsSharedSizeScope="True" AlternationCount="2" Grid.Row="1" BorderThickness="0">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Name="Result">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" SharedSizeGroup="A" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
+                    <TextBox
+                        x:Name="textBox"
+                        TextWrapping="Wrap"
+                        VerticalAlignment="Top"
+                        FontSize="16"
+                        Padding="5"
+                        TextChanged="TextBox_TextChanged"
+                        PreviewKeyDown="TextBox_PreviewKeyDown" BorderThickness="0,1" />
 
-                                <Polygon Points="0,0 5,5 0,10"
-                                         Fill="Blue"
-                                         Grid.RowSpan="2"
-                                         HorizontalAlignment="Left"
-                                         VerticalAlignment="Center"
-                                         Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsSelected, Converter={StaticResource Bool2VisibilityConverter}, Mode=OneWay}" />
+                    <ListView Name="SearchResults" Grid.IsSharedSizeScope="True" AlternationCount="2" Grid.Row="1" BorderThickness="0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Name="Result">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" SharedSizeGroup="A" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
 
-                                <TextBlock Text="{Binding Value}" FontSize="36" HorizontalAlignment="Center" Padding="5">
-                                    <TextBlock.Style>
-                                        <Style TargetType="{x:Type TextBlock}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding HasSpecialValue}" Value="true">
-                                                    <Setter Property="Foreground" Value="Blue" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
+                                    <TextBlock Text="{Binding Value}" FontSize="36" HorizontalAlignment="Center" Padding="5">
+                                        <TextBlock.Style>
+                                            <Style TargetType="{x:Type TextBlock}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding HasSpecialValue}" Value="true">
+                                                        <Setter Property="Foreground" Value="Blue" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
 
-                                <TextBlock Text="{Binding Codepoint}" Grid.Row="1" FontSize="12" HorizontalAlignment="Center" Padding="5" Foreground="#666666" />
+                                    <TextBlock Text="{Binding Codepoint}" Grid.Row="1" FontSize="12" HorizontalAlignment="Center" Padding="5" Foreground="#666666" />
 
-                                <TextBlock Text="{Binding Name}" Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Center" FontSize="16" />
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
+                                    <TextBlock Text="{Binding Name}" Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Center" FontSize="16" TextTrimming="CharacterEllipsis" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
 
-                    <ListView.Resources>
-                        <Style TargetType="{x:Type ListViewItem}">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                            <Setter Property="Margin" Value="-4,0" />
-                            <Setter Property="BorderThickness" Value="0" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="ListViewItem">
-                                        <Border
-                                            BorderThickness="{TemplateBinding Border.BorderThickness}"
-                                            Padding="{TemplateBinding Control.Padding}"
-                                            BorderBrush="{TemplateBinding Border.BorderBrush}"
-                                            Background="{TemplateBinding Panel.Background}"
-                                            Name="Bd"
-                                            SnapsToDevicePixels="True">
-                                            <ContentPresenter
-                                                Content="{TemplateBinding ContentControl.Content}"
-                                                ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
-                                                ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
-                                                HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
-                                                VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
-                                                SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <MultiTrigger>
-                                                <MultiTrigger.Conditions>
-                                                    <Condition Property="UIElement.IsMouseOver">
-                                                        <Condition.Value>True</Condition.Value>
-                                                    </Condition>
-                                                </MultiTrigger.Conditions>
-                                                <Setter Property="Panel.Background" TargetName="Bd">
-                                                    <Setter.Value>
-                                                        <SolidColorBrush>#e8e8e8</SolidColorBrush>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </MultiTrigger>
-                                            <MultiTrigger>
-                                                <MultiTrigger.Conditions>
-                                                    <Condition Property="Selector.IsSelectionActive">
-                                                        <Condition.Value>False</Condition.Value>
-                                                    </Condition>
-                                                    <Condition Property="Selector.IsSelected">
-                                                        <Condition.Value>True</Condition.Value>
-                                                    </Condition>
-                                                </MultiTrigger.Conditions>
-                                                <Setter Property="Panel.Background" TargetName="Bd">
-                                                    <Setter.Value>
-                                                        <SolidColorBrush>#e0e0e0</SolidColorBrush>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </MultiTrigger>
-                                            <MultiTrigger>
-                                                <MultiTrigger.Conditions>
-                                                    <Condition Property="Selector.IsSelectionActive">
-                                                        <Condition.Value>True</Condition.Value>
-                                                    </Condition>
-                                                    <Condition Property="Selector.IsSelected">
-                                                        <Condition.Value>True</Condition.Value>
-                                                    </Condition>
-                                                </MultiTrigger.Conditions>
-                                                <Setter Property="Panel.Background" TargetName="Bd">
-                                                    <Setter.Value>
-                                                        <SolidColorBrush>#e0e0e0</SolidColorBrush>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </MultiTrigger>
-                                            <Trigger Property="UIElement.IsEnabled">
-                                                <Setter Property="TextElement.Foreground" TargetName="Bd">
-                                                    <Setter.Value>
-                                                        <DynamicResource ResourceKey="{x:Static SystemColors.GrayTextBrushKey}" />
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Trigger.Value>False</Trigger.Value>
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                            <Style.Triggers>
-                                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                                    <Setter Property="Background" Value="#f0f0f0" />
-                                </Trigger>
-                                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                                    <Setter Property="Background" Value="#f8f8f8" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ListView.Resources>
-                </ListView>
-            </Grid>
-        </TabItem>
+                        <ListView.Resources>
+                            <Style TargetType="{x:Type ListView}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ListBox}">
+                                            <Border BorderThickness="{TemplateBinding Border.BorderThickness}" Padding="0" BorderBrush="{TemplateBinding Border.BorderBrush}" Background="{TemplateBinding Panel.Background}" Name="Bd" SnapsToDevicePixels="True">
+                                                <ScrollViewer Padding="{TemplateBinding Control.Padding}" Focusable="False" HorizontalScrollBarVisibility="Disabled">
+                                                    <ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                                                </ScrollViewer>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="Margin" Value="-4,0" />
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListViewItem">
+                                            <Border
+                                                BorderThickness="{TemplateBinding Border.BorderThickness}"
+                                                Padding="{TemplateBinding Control.Padding}"
+                                                BorderBrush="{TemplateBinding Border.BorderBrush}"
+                                                Background="{TemplateBinding Panel.Background}"
+                                                Name="Bd"
+                                                SnapsToDevicePixels="True">
+                                                <ContentPresenter
+                                                    Content="{TemplateBinding ContentControl.Content}"
+                                                    ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
+                                                    ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
+                                                    HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                                                    VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+                                                    SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <MultiTrigger>
+                                                    <MultiTrigger.Conditions>
+                                                        <Condition Property="UIElement.IsMouseOver">
+                                                            <Condition.Value>True</Condition.Value>
+                                                        </Condition>
+                                                    </MultiTrigger.Conditions>
+                                                    <Setter Property="Panel.Background" TargetName="Bd">
+                                                        <Setter.Value>
+                                                            <SolidColorBrush>#e8e8e8</SolidColorBrush>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </MultiTrigger>
+                                                <MultiTrigger>
+                                                    <MultiTrigger.Conditions>
+                                                        <Condition Property="Selector.IsSelectionActive">
+                                                            <Condition.Value>False</Condition.Value>
+                                                        </Condition>
+                                                        <Condition Property="Selector.IsSelected">
+                                                            <Condition.Value>True</Condition.Value>
+                                                        </Condition>
+                                                    </MultiTrigger.Conditions>
+                                                    <Setter Property="Panel.Background" TargetName="Bd">
+                                                        <Setter.Value>
+                                                            <SolidColorBrush>#e0e0e0</SolidColorBrush>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </MultiTrigger>
+                                                <MultiTrigger>
+                                                    <MultiTrigger.Conditions>
+                                                        <Condition Property="Selector.IsSelectionActive">
+                                                            <Condition.Value>True</Condition.Value>
+                                                        </Condition>
+                                                        <Condition Property="Selector.IsSelected">
+                                                            <Condition.Value>True</Condition.Value>
+                                                        </Condition>
+                                                    </MultiTrigger.Conditions>
+                                                    <Setter Property="Panel.Background" TargetName="Bd">
+                                                        <Setter.Value>
+                                                            <SolidColorBrush>#e0e0e0</SolidColorBrush>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </MultiTrigger>
+                                                <Trigger Property="UIElement.IsEnabled">
+                                                    <Setter Property="TextElement.Foreground" TargetName="Bd">
+                                                        <Setter.Value>
+                                                            <DynamicResource ResourceKey="{x:Static SystemColors.GrayTextBrushKey}" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Trigger.Value>False</Trigger.Value>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                                        <Setter Property="Background" Value="#f0f0f0" />
+                                    </Trigger>
+                                    <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                        <Setter Property="Background" Value="#f8f8f8" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.Resources>
+                    </ListView>
+                </Grid>
+            </TabItem>
 
-        <TabItem Style="{StaticResource TabHeaderNormalStyle}">
-            <TabItem.Header>
-                <StackPanel Style="{StaticResource TabHeaderStackPanelStyle}">
-                    <TextBlock Text="&#xE713;" Style="{StaticResource TabHeaderIconStyle}" />
-                    <TextBlock Text="Settings" Grid.Row="2" Style="{StaticResource TabHeaderTextStyle}" />
-                </StackPanel>
-            </TabItem.Header>
-        </TabItem>
-    </TabControl>
+            <TabItem Style="{StaticResource TabHeaderNormalStyle}">
+                <TabItem.Header>
+                    <StackPanel Style="{StaticResource TabHeaderStackPanelStyle}">
+                        <TextBlock Text="&#xE8A9;" Style="{StaticResource TabHeaderIconStyle}" />
+                        <TextBlock Text="Blocks" Grid.Row="2" Style="{StaticResource TabHeaderTextStyle}" />
+                    </StackPanel>
+                </TabItem.Header>
+            </TabItem>
+
+            <TabItem Style="{StaticResource TabHeaderNormalStyle}">
+                <TabItem.Header>
+                    <StackPanel Style="{StaticResource TabHeaderStackPanelStyle}">
+                        <TextBlock Text="&#xE734;" Style="{StaticResource TabHeaderIconStyle}" />
+                        <TextBlock Text="Favorites" Grid.Row="2" Style="{StaticResource TabHeaderTextStyle}" />
+                    </StackPanel>
+                </TabItem.Header>
+            </TabItem>
+        </TabControl>
+
+        <Button
+            x:Name="navButton"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Cursor="Hand"
+            Click="navButton_Click"
+            ContextMenuService.IsEnabled="False">
+            <TextBlock Text="&#xE700;" Style="{StaticResource TabHeaderIconStyle}" Margin="15,10,15,9" />
+            <Button.Resources>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+                    <Setter Property="Background" Value="White" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Border Background="{TemplateBinding Background}" BorderThickness="0">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#e8e8e8" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Resources>
+            <Button.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Settings" />
+                    <MenuItem Header="Exit" />
+                </ContextMenu>
+            </Button.ContextMenu>
+        </Button>
+    </Grid>
 </Window>
