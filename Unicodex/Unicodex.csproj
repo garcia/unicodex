@@ -81,8 +81,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Cache.cs" />
+    <Compile Include="FilterController.cs" />
     <Compile Include="Win32.cs" />
-    <Compile Include="UnicodexSearch.cs" />
+    <Compile Include="UnicodexFilter.cs" />
     <Compile Include="View.cs" />
     <Page Include="Unicodex.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -21,6 +21,7 @@ namespace Unicodex.View
 
     public class Character : ViewBase
     {
+        public Model.Character Model { get; private set; }
         public string Codepoint { get; private set; }
         public string Name { get; private set; }
         public string Value { get; private set; }
@@ -28,7 +29,8 @@ namespace Unicodex.View
 
         public Character(Model.Character c)
         {
-            Codepoint = "U+" + c.Codepoint.ToString("X4");
+            Model = c;
+            Codepoint = "U+" + c.CodepointHex;
             Name = c.Name;
 
             if (c.Codepoint <= 32)

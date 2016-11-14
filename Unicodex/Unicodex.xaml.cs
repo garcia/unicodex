@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Resources;
@@ -8,6 +9,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 
+using Unicodex.Model;
+using Unicodex.Controller;
+
 namespace Unicodex
 {
     /// <summary>
@@ -15,17 +19,32 @@ namespace Unicodex
     /// </summary>
     public partial class MainWindow : Window
     {
-        private UnicodexSearch unicodexSearch;
-
-        private ObservableCollection<View.Character> results;
+        private FilterController search;
+        private FilterController favorites;
 
         private System.Windows.Forms.NotifyIcon notifyIcon;
 
         public MainWindow()
         {
-            unicodexSearch = new UnicodexSearch();
             InitializeComponent();
             InitializeNotifyIcon();
+        }
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+
+            // Create filter controllers
+            search = new SearchController(this);
+            favorites = new FavoritesController(this, search.Filter);
+
+            // Add WndProc handler
+            HwndSource source = PresentationSource.FromVisual(this) as HwndSource;
+            source.AddHook(WndProc);
+
+            // Register hotkey (TODO: make user-configurable)
+            IntPtr hWnd = getMainWindowHwnd();
+            Win32.RegisterHotKey(hWnd, 0, Win32.MOD_NOREPEAT | Win32.MOD_CONTROL | Win32.MOD_SHIFT, KeyInterop.VirtualKeyFromKey(Key.U));
         }
 
         private void InitializeNotifyIcon()
@@ -44,39 +63,26 @@ namespace Unicodex
             System.Windows.Forms.MenuItem menuItemShow = new System.Windows.Forms.MenuItem();
             menuItemShow.Index = 0;
             menuItemShow.Text = "&Show";
-            menuItemShow.Click += new System.EventHandler(menuItemShow_Click);
+            menuItemShow.Click += new System.EventHandler(NotifyIcon_MenuItem_Show_Click);
 
             System.Windows.Forms.MenuItem menuItemExit = new System.Windows.Forms.MenuItem();
             menuItemExit.Index = 1;
             menuItemExit.Text = "E&xit";
-            menuItemExit.Click += new System.EventHandler(menuItemExit_Click);
+            menuItemExit.Click += new System.EventHandler(NotifyIcon_MenuItem_Exit_Click);
 
             System.Windows.Forms.ContextMenu contextMenu = new System.Windows.Forms.ContextMenu();
             contextMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] { menuItemShow, menuItemExit });
             notifyIcon.ContextMenu = contextMenu;
         }
 
-        private void menuItemShow_Click(object sender, EventArgs e)
+        private void NotifyIcon_MenuItem_Show_Click(object sender, EventArgs e)
         {
             Show();
         }
 
-        private void menuItemExit_Click(object sender, EventArgs e)
+        private void NotifyIcon_MenuItem_Exit_Click(object sender, EventArgs e)
         {
             Shutdown();
-        }
-
-        protected override void OnSourceInitialized(EventArgs e)
-        {
-            base.OnSourceInitialized(e);
-
-            // Add WndProc handler
-            HwndSource source = PresentationSource.FromVisual(this) as HwndSource;
-            source.AddHook(WndProc);
-
-            // Register hotkey (TODO: make user-configurable)
-            IntPtr hWnd = getMainWindowHwnd();
-            Win32.RegisterHotKey(hWnd, 0, Win32.MOD_NOREPEAT | Win32.MOD_CONTROL | Win32.MOD_SHIFT, KeyInterop.VirtualKeyFromKey(Key.U));
         }
 
         private IntPtr getMainWindowHwnd()
@@ -108,8 +114,9 @@ namespace Unicodex
         {
             if (!(bool)e.NewValue)
             {
-                // Switch back to the search tab and clear the search box
-                textBox.Text = string.Empty;
+                // Switch back to the search tab and clear the filter inputs
+                SearchTextBox.Text = string.Empty;
+                FavoritesTextBox.Text = string.Empty;
                 tabControl.SelectedIndex = 0;
             }
             else
@@ -162,10 +169,10 @@ namespace Unicodex
                 DependencyPropertyChangedEventHandler handler = null;
                 handler = delegate
                 {
-                    textBox.Focus();
-                    textBox.IsVisibleChanged -= handler;
+                    SearchTextBox.Focus();
+                    SearchTextBox.IsVisibleChanged -= handler;
                 };
-                textBox.IsVisibleChanged += handler;
+                SearchTextBox.IsVisibleChanged += handler;
             }
         }
 
@@ -210,78 +217,24 @@ namespace Unicodex
             e.Cancel = true;
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            SearchResults.ItemsSource = results = unicodexSearch.Search(new Model.Query(textBox.Text));
-            UpdateSelectedResult(0);
-
+            search.UpdateResults();
         }
 
-        private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void FavoritesTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (results != null && results.Count > 0)
-            {
-                if (e.IsDown)
-                {
-                    // Use up/down arrow keys to navigate search results
-                    if (e.Key == Key.Down)
-                    {
-                        UpdateSelectedResult(SearchResults.SelectedIndex + 1);
-                    }
-                    else if (e.Key == Key.Up)
-                    {
-                        UpdateSelectedResult(SearchResults.SelectedIndex - 1);
-                    }
-                    // Use Enter to send the selected character
-                    else if (e.Key == Key.Enter)
-                    {
-                        SendCharacter(results[SearchResults.SelectedIndex]);
-                    }
-                }
-            }
+            favorites.UpdateResults();
         }
 
-        private void SendCharacter(View.Character c)
+        private void SearchTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            // Build key data for SendInput
-            // FIXME: astral plane characters break in Notepad++
-            Win32.INPUT[] inputs = new Win32.INPUT[c.Value.Length];
-            int iChr = 0;
-            foreach (char chr in c.Value)
-            {
-                inputs[iChr] = new Win32.INPUT();
-                inputs[iChr].type = Win32.InputType.KEYBOARD;
-                inputs[iChr].U.ki = new Win32.KEYBDINPUT();
-                inputs[iChr].U.ki.wVk = 0;
-                inputs[iChr].U.ki.wScan = (short)chr;
-                inputs[iChr].U.ki.dwFlags = Win32.KEYEVENTF.UNICODE;
-                inputs[iChr].U.ki.time = 0;
-                iChr++;
-            }
-
-            // Send keys as soon as Unicodex is done hiding itself
-            EventHandler handler = null;
-            handler = delegate(object sender, EventArgs e)
-            {
-                uint result = Win32.SendInput((uint)c.Value.Length, inputs, Marshal.SizeOf(inputs[0]));
-                if (result == 0)
-                {
-                    throw new Win32Exception();
-                }
-                Deactivated -= handler;
-            };
-            Deactivated += handler;
-            Hide();
+            search.PreviewKeyDown(sender, e, SearchResults);
         }
 
-        private void UpdateSelectedResult(int selected)
+        private void FavoritesTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (results != null && results.Count > 0)
-            {
-                SearchResults.SelectedIndex = Math.Min(Math.Max(selected, 0), results.Count - 1);
-                SearchResults.ScrollIntoView(SearchResults.SelectedItem);
-            }
-
+            favorites.PreviewKeyDown(sender, e, FavoritesResults);
         }
 
         private void navButton_Click(object sender, RoutedEventArgs e)
@@ -304,5 +257,27 @@ namespace Unicodex
 
             Application.Current.Shutdown();
         }
+
+        private void Search_MenuItem_CopyToClipboard_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            View.Character character = (View.Character)menuItem.DataContext;
+            search.CopyToClipboard(character);
+        }
+
+        private void Search_MenuItem_MarkAsFavorite_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            View.Character character = (View.Character)menuItem.DataContext;
+
+            // Update settings with new favorite
+            Properties.Settings.Default.Favorites.Add(character.Model.CodepointHex);
+            Properties.Settings.Default.Save();
+
+            // Refresh UI
+            favorites.Filter.Add(character.Model);
+            favorites.UpdateResults();
+        }
     }
+
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace Unicodex.Model
 {
@@ -58,6 +60,7 @@ namespace Unicodex.Model
         public string Name { get; private set; }
         public string[] NameWords { get; private set; }
 
+        public string CodepointHex { get { return Codepoint.ToString("X4"); } }
         public override string Unsplit { get { return Name; } }
         public override string[] Split { get { return NameWords; } }
 
@@ -107,7 +110,10 @@ namespace Unicodex.Model
                         break;
                     }
                 }
-                if (!matchesQueryWord) return false;
+                if (!matchesQueryWord)
+                {
+                    if (c.CodepointHex != queryWord) return false;
+                }
             }
             return true;
         }
