@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Resources;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
-
-using Unicodex.Model;
 using Unicodex.Controller;
 
 namespace Unicodex
@@ -106,6 +101,23 @@ namespace Unicodex
                 if (e.Key == Key.Escape)
                 {
                     Hide();
+                }
+                else if (e.Key != Key.Up && e.Key != Key.Down)
+                {
+                    FilterController activeFilter = null;
+                    if (search.IsActive())
+                    {
+                        activeFilter = search;
+                    }
+                    else if (favorites.IsActive())
+                    {
+                        activeFilter = favorites;
+                    }
+                    if (activeFilter != null)
+                    {
+                        activeFilter.FocusInput();
+                        activeFilter.PreviewKeyDown(e);
+                    }
                 }
             }
         }
@@ -229,12 +241,12 @@ namespace Unicodex
 
         private void SearchTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            search.PreviewKeyDown(sender, e, SearchResults);
+            search.PreviewKeyDown(e);
         }
 
         private void FavoritesTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            favorites.PreviewKeyDown(sender, e, FavoritesResults);
+            favorites.PreviewKeyDown(e);
         }
 
         private void navButton_Click(object sender, RoutedEventArgs e)

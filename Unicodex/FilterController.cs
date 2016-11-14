@@ -28,46 +28,45 @@ namespace Unicodex.Controller
         public void UpdateResults()
         {
             results.ItemsSource = Filter.Search(new Model.Query(input.Text));
-            UpdateSelectedResult(results, 0);
+            UpdateSelectedResult(0);
         }
 
-        public void UpdateSelectedResult(ListView listView, int selected)
+        public void UpdateSelectedResult(int selected)
         {
-            ObservableCollection<View.Character> results = (ObservableCollection<View.Character>)listView.ItemsSource;
-            if (results != null && results.Count > 0)
+            ObservableCollection<View.Character> items = (ObservableCollection<View.Character>)results.ItemsSource;
+            if (items != null && items.Count > 0)
             {
-                listView.SelectedIndex = Math.Min(Math.Max(selected, 0), results.Count - 1);
-                listView.ScrollIntoView(listView.SelectedItem);
+                results.SelectedIndex = Math.Min(Math.Max(selected, 0), items.Count - 1);
+                results.ScrollIntoView(results.SelectedItem);
             }
         }
 
-        public void PreviewKeyDown(object sender, KeyEventArgs e, ListView listView)
+        public void PreviewKeyDown(KeyEventArgs e)
         {
-            TextBox textBox = (TextBox)sender;
-            ObservableCollection<View.Character> results = (ObservableCollection<View.Character>)listView.ItemsSource;
-            if (results != null && results.Count > 0)
+            ObservableCollection<View.Character> items = (ObservableCollection<View.Character>)results.ItemsSource;
+            if (items != null && items.Count > 0)
             {
                 if (e.IsDown)
                 {
                     // Use up/down arrow keys to navigate search results
                     if (e.Key == Key.Down)
                     {
-                        UpdateSelectedResult(listView, listView.SelectedIndex + 1);
+                        UpdateSelectedResult(results.SelectedIndex + 1);
                     }
                     else if (e.Key == Key.Up)
                     {
-                        UpdateSelectedResult(listView, listView.SelectedIndex - 1);
+                        UpdateSelectedResult(results.SelectedIndex - 1);
                     }
                     // Use Enter to send the selected character
                     else if (e.Key == Key.Enter)
                     {
-                        SendCharacter(results[listView.SelectedIndex]);
+                        SendCharacter(items[results.SelectedIndex]);
                     }
                     else if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.C)
                     {
-                        if (textBox.SelectedText == string.Empty)
+                        if (input.SelectedText == string.Empty)
                         {
-                            CopyToClipboard(results[listView.SelectedIndex]);
+                            CopyToClipboard(items[results.SelectedIndex]);
                         }
                     }
                 }
@@ -111,6 +110,16 @@ namespace Unicodex.Controller
         {
             Clipboard.SetText(character.Value);
             window.Hide();
+        }
+
+        public bool IsActive()
+        {
+            return input.IsVisible;
+        }
+
+        public void FocusInput()
+        {
+            input.Focus();
         }
     }
 
