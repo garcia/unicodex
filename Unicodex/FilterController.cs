@@ -75,11 +75,13 @@ namespace Unicodex.Controller
 
         private void SendCharacter(View.Character c)
         {
+            string value = c.Model.Value;
+
             // Build key data for SendInput
             // FIXME: astral plane characters break in Notepad++
-            Win32.INPUT[] inputs = new Win32.INPUT[c.Value.Length];
+            Win32.INPUT[] inputs = new Win32.INPUT[value.Length];
             int iChr = 0;
-            foreach (char chr in c.Value)
+            foreach (char chr in value)
             {
                 inputs[iChr] = new Win32.INPUT();
                 inputs[iChr].type = Win32.InputType.KEYBOARD;
@@ -95,7 +97,7 @@ namespace Unicodex.Controller
             EventHandler handler = null;
             handler = delegate (object sender, EventArgs e)
             {
-                uint result = Win32.SendInput((uint)c.Value.Length, inputs, Marshal.SizeOf(inputs[0]));
+                uint result = Win32.SendInput((uint)value.Length, inputs, Marshal.SizeOf(inputs[0]));
                 if (result == 0)
                 {
                     throw new Win32Exception();
@@ -108,7 +110,7 @@ namespace Unicodex.Controller
 
         public void CopyToClipboard(View.Character character)
         {
-            Clipboard.SetText(character.Value);
+            Clipboard.SetText(character.Model.Value);
             window.Hide();
         }
 
