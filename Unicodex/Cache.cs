@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 using Unicodex.Model;
 
 namespace Unicodex
@@ -12,7 +13,7 @@ namespace Unicodex
             Items = new Dictionary<string, List<Character>>();
         }
 
-        public void Add(Character c)
+        public virtual void Add(Character c)
         {
             foreach (string key in GetKeys(c))
             {
@@ -120,6 +121,32 @@ namespace Unicodex
         public override bool Matches(Query query, Character cacheHit)
         {
             return true;
+        }
+    }
+
+    class FavoritesCache : Cache
+    {
+        private IList<string> favorites;
+
+        public FavoritesCache(IList<string> favorites) : base()
+        {
+            this.favorites = favorites;
+        }
+
+        public override void Add(Character c)
+        {
+            if (favorites.Contains(c.CodepointHex))
+            {
+                base.Add(c);
+            }
+        }
+
+        public override IEnumerable<string>GetKeys(SplitString s)
+        {
+            foreach (string word in s.Split)
+            {
+                yield return word[0].ToString();
+            }
         }
     }
 }

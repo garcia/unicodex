@@ -12,6 +12,7 @@ namespace Unicodex
 
         private Cache[] Caches = new Cache[]
         {
+            new FavoritesCache(Properties.Settings.Default.Favorites.Cast<string>().ToList()),
             //new NameCache(),
             //new FirstWordCache(),
             new AllWordsCache(),
