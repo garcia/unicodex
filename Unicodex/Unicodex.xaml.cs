@@ -188,6 +188,11 @@ namespace Unicodex
             }
         }
 
+        private void Window_Deactivated(object sender, EventArgs e)
+        {
+            Hide();
+        }
+
         private void PutWindowNear(int left, int top, int bottom)
         {
             IntPtr monitor = Win32.MonitorFromPoint(new Win32.POINT(left, (top + bottom) / 2), Win32.MonitorOptions.MONITOR_DEFAULTTONEAREST);
@@ -290,6 +295,7 @@ namespace Unicodex
             favorites.Filter.Add(character.Model);
             favorites.UpdateResults();
         }
+
     }
 
 }

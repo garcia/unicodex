@@ -9,6 +9,7 @@
         Title="Unicodex"
         PreviewKeyDown="Window_PreviewKeyDown"
         IsVisibleChanged="Window_IsVisibleChanged"
+        Deactivated="Window_Deactivated"
         Closing="Window_Closing"
         Height="329"
         Width="640">
@@ -58,10 +59,40 @@
             <Setter Property="FontSize" Value="16" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
-        <Style TargetType="{x:Type TextBlock}" x:Key="MenuItemIconStyle">
+        <Style TargetType="{x:Type TextBlock}" x:Key="IconStyle">
             <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
             <Setter Property="FontSize" Value="16" />
             <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="{x:Type ToggleButton}" x:Key="FavoriteButtonStyle">
+            <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border Padding="10,0">
+                            <Grid Background="Transparent">
+                                <ContentPresenter></ContentPresenter>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Setter Property="TextBlock.Foreground" Value="#b0b0b0"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="TextBlock.Foreground" Value="#606060"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter Property="Content" Value="&#xE734;" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="TextBlock.Foreground" Value="{x:Static SystemColors.MenuHighlightBrush}" />
+                                <Setter Property="Content" Value="&#xE735;" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Window.Resources>
 
@@ -102,6 +133,7 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" SharedSizeGroup="SearchResultColumnSize1" />
                                         <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock Text="{Binding Value}" FontSize="36" HorizontalAlignment="Center" Padding="5">
@@ -120,16 +152,24 @@
 
                                     <TextBlock Text="{Binding Name}" Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Center" FontSize="16" TextTrimming="CharacterEllipsis" />
 
+                                    <ToggleButton 
+                                        Grid.Column="2"
+                                        Grid.RowSpan="2"
+                                        Style="{StaticResource FavoriteButtonStyle}"
+                                        Background="Transparent"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center" />
+
                                     <Grid.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem x:Name="CopyToClipboard" Header="Copy to clipboard" Click="Search_MenuItem_CopyToClipboard_Click">
                                                 <MenuItem.Icon>
-                                                    <TextBlock Text="&#xE8C8;" Style="{StaticResource MenuItemIconStyle}" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" />
+                                                    <TextBlock Text="&#xE8C8;" Style="{StaticResource IconStyle}" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" />
                                                 </MenuItem.Icon>
                                             </MenuItem>
                                             <MenuItem x:Name="MarkAsFavorite" Header="Mark as favorite" Click="Search_MenuItem_MarkAsFavorite_Click">
                                                 <MenuItem.Icon>
-                                                    <TextBlock Text="&#xE734;" Style="{StaticResource MenuItemIconStyle}" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" />
+                                                    <TextBlock Text="&#xE734;" Style="{StaticResource IconStyle}" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" />
                                                 </MenuItem.Icon>
                                             </MenuItem>
                                         </ContextMenu>

@@ -1,0 +1,21 @@
+﻿- blocks tab
+- make the star button actually work
+	- ability to remove favorites
+- settings window
+	- toggle text caret positioning
+	- choose cursor or window fallback positioning
+	- choose window edge + inside/outside placement
+	- toggle autostart
+	- choose global hotkey
+- about window
+- package for distribution / installation
+
+=== 1.0 ===
+
+- aliases
+- CJK
+- fileformat.info & related context menu options
+- ability to hide characters
+- suggest last used character when window is reactivated?
+- ability to tweak caching / change priority of search methods?
+- per-application settings?

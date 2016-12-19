@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Specialized;
 using Unicodex.Model;
 
 namespace Unicodex
@@ -141,7 +140,7 @@ namespace Unicodex
             }
         }
 
-        public override IEnumerable<string>GetKeys(SplitString s)
+        public override IEnumerable<string> GetKeys(SplitString s)
         {
             foreach (string word in s.Split)
             {
