@@ -484,8 +484,8 @@
             </Button.Resources>
             <Button.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Settings" />
-                    <MenuItem Header="Exit" />
+                    <MenuItem Header="Settings" Click="NavButton_MenuItem_Settings_Click" />
+                    <MenuItem Header="Exit" Click="NavButton_MenuItem_Exit_Click" />
                 </ContextMenu>
             </Button.ContextMenu>
         </Button>

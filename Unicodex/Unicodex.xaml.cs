@@ -296,6 +296,16 @@ namespace Unicodex
             favorites.UpdateResults();
         }
 
+        private void NavButton_MenuItem_Settings_Click(object sender, RoutedEventArgs e)
+        {
+            Settings settingsWindow = new Settings();
+            settingsWindow.Show();
+        }
+
+        private void NavButton_MenuItem_Exit_Click(object sender, RoutedEventArgs e)
+        {
+            Shutdown();
+        }
     }
 
 }
