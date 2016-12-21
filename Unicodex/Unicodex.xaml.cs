@@ -147,7 +147,7 @@ namespace Unicodex
                          * gracefully degrade by using the cursor position. */
                         int left = System.Windows.Forms.Cursor.Position.X;
                         int top = System.Windows.Forms.Cursor.Position.Y;
-                        PutWindowNear(left, top, top);
+                        WindowUtils.PutWindowNear(this, left, top, top);
                     }
                     else
                     {
@@ -160,7 +160,7 @@ namespace Unicodex
                             int left = windowRect.left + gui.rcCaret.left;
                             int top = windowRect.top + gui.rcCaret.top;
                             int bottom = windowRect.top + gui.rcCaret.bottom;
-                            PutWindowNear(left, top, bottom);
+                            WindowUtils.PutWindowNear(this, left, top, bottom);
                         }
                         else
                         {
@@ -191,41 +191,6 @@ namespace Unicodex
         private void Window_Deactivated(object sender, EventArgs e)
         {
             Hide();
-        }
-
-        private void PutWindowNear(int left, int top, int bottom)
-        {
-            IntPtr monitor = Win32.MonitorFromPoint(new Win32.POINT(left, (top + bottom) / 2), Win32.MonitorOptions.MONITOR_DEFAULTTONEAREST);
-            Win32.MONITORINFO monitorInfo = new Win32.MONITORINFO();
-            monitorInfo.cbSize = Marshal.SizeOf(monitorInfo);
-            Win32.GetMonitorInfo(monitor, ref monitorInfo);
-            Win32.RECT workArea = monitorInfo.rcWork;
-
-            /* Wherever the window spawns, put it just below and to the left
-             * of the focal point, for aesthetic reasons. */
-            int leftOffset = -5;
-            int topOffset = -5;
-            int bottomOffset = 5;
-
-            int newRight = left + (int)ActualWidth + leftOffset;
-            int newBottom = bottom + (int)ActualHeight + bottomOffset;
-            if (newRight > workArea.right)
-            {
-                left -= (int)ActualWidth;
-            }
-            if (newBottom > workArea.bottom)
-            {
-                top -= (int)ActualHeight;
-                top += topOffset;
-            }
-            else
-            {
-                top = bottom;
-                top += bottomOffset;
-            }
-
-            Left = Math.Max(left + leftOffset, 0);
-            Top = Math.Max(top, 0);
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)

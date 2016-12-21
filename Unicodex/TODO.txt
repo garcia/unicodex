@@ -19,3 +19,4 @@
 - suggest last used character when window is reactivated?
 - ability to tweak caching / change priority of search methods?
 - per-application settings?
+- emoji tab?

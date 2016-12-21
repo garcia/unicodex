@@ -6,12 +6,15 @@
         xmlns:local="clr-namespace:Unicodex"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Settings" SizeToContent="WidthAndHeight">
+        Title="Settings"
+        IsVisibleChanged="Window_IsVisibleChanged"
+        SizeToContent="WidthAndHeight">
     <Window.Resources>
         <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
     </Window.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -38,14 +41,14 @@
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="18" />
+                        <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="Non-modifier key:" Width="97" Margin="0,0,10,0" />
-                    <TextBox x:Name="globalHotkeyNonModifier" Grid.Column="1"></TextBox>
+                    <TextBox x:Name="globalHotkeyNonModifier" Grid.Column="1" PreviewKeyDown="globalHotkeyNonModifier_PreviewKeyDown" IsReadOnly="True"></TextBox>
                 </Grid>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Window placement" Grid.Row="2">
+        <GroupBox Header="Window placement" Grid.Row="2" Margin="0,0,0,10">
             <Grid Margin="10">
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -125,5 +128,6 @@
                 </Grid>
             </Grid>
         </GroupBox>
+        <Button Name="saveAndClose" Content="Save &amp; Close" Grid.Row="3" HorizontalAlignment="Right" Padding="5,2" Click="saveAndClose_Click" />
     </Grid>
 </Window>
