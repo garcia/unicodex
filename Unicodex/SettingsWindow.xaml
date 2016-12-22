@@ -1,0 +1,146 @@
+﻿<Window x:Class="Unicodex.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Unicodex"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="Settings"
+        IsVisibleChanged="Window_IsVisibleChanged"
+        SizeToContent="WidthAndHeight">
+    <Window.Resources>
+        <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+        <local:EnumBooleanConverter x:Key="EnumBooleanConverter" />
+    </Window.Resources>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <CheckBox x:Name="runOnStartup"
+                  Content="Run Unicodex on startup"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Top"
+                  Grid.Row="0"
+                  Margin="0,0,0,10"
+                  IsChecked="{Binding runOnStartup, Mode=TwoWay}" />
+        <GroupBox x:Name="globalHotkey" Header="Global hotkey" Grid.Row="1" Margin="0,0,0,10">
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <CheckBox x:Name="globalHotkeyCtrl" Content="Ctrl" Grid.Column="0" Margin="0,0,0,5" IsChecked="{Binding globalHotkeyCtrl, Mode=TwoWay}" />
+                    <CheckBox x:Name="globalHotkeyAlt" Content="Alt" Grid.Column="1" Margin="0,0,0,5" IsChecked="{Binding globalHotkeyAlt, Mode=TwoWay}" />
+                    <CheckBox x:Name="globalHotkeyShift" Content="Shift" Grid.Column="2" Margin="0,0,0,5" IsChecked="{Binding globalHotkeyShift, Mode=TwoWay}" />
+                    <CheckBox x:Name="globalHotkeyWin" Content="Win" Grid.Column="3" IsChecked="{Binding globalHotkeyWin, Mode=TwoWay}" />
+                </Grid>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Non-modifier key:" Width="97" Margin="0,0,10,0" />
+                    <TextBox x:Name="globalHotkeyNonModifier"
+                             Grid.Column="1"
+                             IsReadOnly="True"
+                             PreviewKeyDown="globalHotkeyNonModifier_PreviewKeyDown"
+                             Text="{Binding globalHotkeyNonModifier, Mode=TwoWay}" />
+                </Grid>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Window placement" Grid.Row="2" Margin="0,0,0,10">
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <CheckBox x:Name="spawnNearTextCaret"
+                          Content="Spawn near text caret if possible"
+                          Grid.Row="0"
+                          Margin="0,0,0,10"
+                          IsChecked="{Binding spawnNearTextCaret, Mode=TwoWay}" />
+                <Grid Grid.Row="1" Margin="0,0,10,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Otherwise," Grid.Column="0" Margin="0,0,10,0" VerticalAlignment="Top"></TextBlock>
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <RadioButton x:Name="spawnNearCursor"
+                                     GroupName="spawnPlacement"
+                                     Content="{x:Static local:SpawnPlacement.SPAWN_NEAR_CURSOR}"
+                                     Grid.Row="0"
+                                     Margin="0,0,0,10"
+                                     IsChecked="{Binding Path=spawnPlacement, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static local:SpawnPlacement.SPAWN_NEAR_CURSOR}}" />
+                        <Grid Grid.Row="1" Margin="0,0,0,10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <RadioButton x:Name="spawnNearWindow"
+                                         GroupName="spawnPlacement"
+                                         Content="{x:Static local:SpawnPlacement.SPAWN_NEAR_WINDOW}"
+                                         Grid.Row="0"
+                                         Margin="0,0,0,5"
+                                         IsChecked="{Binding Path=spawnPlacement, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static local:SpawnPlacement.SPAWN_NEAR_WINDOW}}" />
+                            <Grid Grid.Row="1" Margin="20,0,0,0" IsEnabled="{Binding ElementName=spawnNearWindow, Path=IsChecked}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="100" />
+                                </Grid.ColumnDefinitions>
+                                <ComboBox Name="windowPlacement"
+                                          Grid.Column="0" Margin="0,0,10,0"
+                                          SelectionChanged="windowPlacement_SelectionChanged"
+                                          ItemsSource="{Binding Source={local:EnumBindingSource {x:Type local:PlacementSide}}}"
+                                          SelectedItem="{Binding windowPlacement, Mode=TwoWay}" />
+                                <ComboBox Name="insideOutsidePlacement"
+                                          Grid.Column="1"
+                                          IsEnabled="{Binding ElementName=windowPlacementCenter, Path=IsSelected, Converter={StaticResource InverseBooleanConverter}}"
+                                          ItemsSource="{Binding Source={local:EnumBindingSource {x:Type local:PlacementInOut}}}"
+                                          SelectedItem="{Binding insideOutsidePlacement, Mode=TwoWay}" />
+                            </Grid>
+                        </Grid>
+                        <Grid Grid.Row="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <RadioButton x:Name="spawnInMonitor"
+                                         GroupName="spawnPlacement"
+                                         Content="{x:Static local:SpawnPlacement.SPAWN_IN_MONITOR}"
+                                         Grid.Row="0"
+                                         Margin="0,0,0,5"
+                                         IsChecked="{Binding Path=spawnPlacement, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static local:SpawnPlacement.SPAWN_IN_MONITOR}}" />
+                            <ComboBox Name="monitorPlacement"
+                                      Margin="20,0,0,0"
+                                      Grid.Row="1"
+                                      Width="90"
+                                      HorizontalAlignment="Left"
+                                      Grid.ColumnSpan="2"
+                                      IsEnabled="{Binding ElementName=spawnInMonitor, Path=IsChecked}"
+                                      ItemsSource="{Binding Source={local:EnumBindingSource {x:Type local:PlacementSide}}}"
+                                      SelectedItem="{Binding monitorPlacement, Mode=TwoWay}" />
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </GroupBox>
+        <Button Name="saveAndClose" Content="Save &amp; Close" Grid.Row="3" HorizontalAlignment="Right" Padding="5,2" Click="saveAndClose_Click" />
+    </Grid>
+</Window>

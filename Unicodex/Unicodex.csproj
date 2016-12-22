@@ -81,13 +81,14 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Cache.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="WindowUtils.cs" />
     <Compile Include="FilterController.cs" />
     <Compile Include="Win32.cs" />
     <Compile Include="UnicodexFilter.cs" />
     <Compile Include="View.cs" />
-    <Compile Include="Settings.xaml.cs">
-      <DependentUpon>Settings.xaml</DependentUpon>
+    <Compile Include="SettingsWindow.xaml.cs">
+      <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="Unicodex.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -102,7 +103,7 @@
       <DependentUpon>Unicodex.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Settings.xaml">
+    <Page Include="SettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

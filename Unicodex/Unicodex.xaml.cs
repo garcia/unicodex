@@ -263,7 +263,7 @@ namespace Unicodex
 
         private void NavButton_MenuItem_Settings_Click(object sender, RoutedEventArgs e)
         {
-            Settings settingsWindow = new Settings();
+            SettingsWindow settingsWindow = new SettingsWindow();
             settingsWindow.Show();
         }
 
