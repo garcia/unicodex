@@ -14,6 +14,7 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Unicodex.Properties;
 
 namespace Unicodex
 {
@@ -22,18 +23,23 @@ namespace Unicodex
     /// </summary>
     public partial class SettingsWindow : Window
     {
+        private static Key[] MODIFIER_KEYS = { Key.LeftAlt, Key.LeftCtrl, Key.LeftShift, Key.RightAlt, Key.RightCtrl, Key.RightShift, Key.LWin, Key.RWin, Key.System };
+
         public SettingsWindow()
         {
             InitializeComponent();
-            DataContext = new Settings();
+            DataContext = Settings.Default.UnicodexSettings;
         }
 
         private void globalHotkeyNonModifier_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            e.Handled = true;
+            if (!MODIFIER_KEYS.Contains(e.Key))
+            {
+                e.Handled = true;
 
-            string keyName = Enum.GetName(typeof(Key), e.Key);
-            globalHotkeyNonModifier.Text = keyName;
+                string keyName = Enum.GetName(typeof(Key), e.Key);
+                globalHotkeyNonModifier.Text = keyName;
+            }
         }
 
         private void saveAndClose_Click(object sender, RoutedEventArgs e)
@@ -45,11 +51,14 @@ namespace Unicodex
         {
             if (!(bool)e.NewValue)
             {
-                // TODO: most properties should already be updated via two-way bindings, but we
-                // need to re-register the global hotkey at this time
+                // Window is closing - save settings
+                Settings.Default.Save();
+                ((App)Application.Current).UpdateHotkey();
+                // TODO: update autostart
             }
             else
             {
+                // Window is opening - put it near the cursor
                 int left = System.Windows.Forms.Cursor.Position.X;
                 int top = System.Windows.Forms.Cursor.Position.Y;
                 WindowUtils.PutWindowNear(this, left, top, top);
@@ -185,5 +194,20 @@ namespace Unicodex
         }
 
         #endregion
+    }
+
+
+
+    public class KeyConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return Enum.GetName(typeof(Key), value);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return (Key)Enum.Parse(typeof(Key), value.ToString());
+        }
     }
 }

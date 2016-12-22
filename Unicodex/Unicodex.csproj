@@ -81,7 +81,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Cache.cs" />
-    <Compile Include="Settings.cs" />
+    <Compile Include="UnicodexSettings.cs" />
     <Compile Include="WindowUtils.cs" />
     <Compile Include="FilterController.cs" />
     <Compile Include="Win32.cs" />

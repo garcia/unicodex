@@ -35,5 +35,16 @@ namespace Unicodex.Properties {
                 this["Favorites"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::Unicodex.UnicodexSettings UnicodexSettings {
+            get {
+                return ((global::Unicodex.UnicodexSettings)(this["UnicodexSettings"]));
+            }
+            set {
+                this["UnicodexSettings"] = value;
+            }
+        }
     }
 }

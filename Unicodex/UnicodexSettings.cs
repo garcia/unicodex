@@ -4,33 +4,34 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Markup;
 
 namespace Unicodex
 {
     [Serializable]
-    public class Settings
+    public class UnicodexSettings
     {
         public Boolean runOnStartup { get; set; }
         public Boolean globalHotkeyCtrl { get; set; }
         public Boolean globalHotkeyAlt { get; set; }
         public Boolean globalHotkeyShift { get; set; }
         public Boolean globalHotkeyWin { get; set; }
-        public String globalHotkeyNonModifier { get; set; }
+        public Key globalHotkeyNonModifier { get; set; }
         public Boolean spawnNearTextCaret { get; set; }
         public SpawnPlacement spawnPlacement { get; set; }
         public PlacementSide windowPlacement { get; set; }
         public PlacementInOut insideOutsidePlacement { get; set; }
         public PlacementSide monitorPlacement { get; set; }
 
-        public Settings()
+        public UnicodexSettings()
         {
             runOnStartup = true;
             globalHotkeyCtrl = true;
             globalHotkeyAlt = false;
             globalHotkeyShift = true;
             globalHotkeyWin = false;
-            globalHotkeyNonModifier = "U";
+            globalHotkeyNonModifier = Key.U;
             spawnNearTextCaret = true;
             spawnPlacement = SpawnPlacement.SPAWN_NEAR_CURSOR;
             windowPlacement = PlacementSide.CENTER;

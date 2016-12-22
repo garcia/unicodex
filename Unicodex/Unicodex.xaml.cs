@@ -37,9 +37,8 @@ namespace Unicodex
             HwndSource source = PresentationSource.FromVisual(this) as HwndSource;
             source.AddHook(WndProc);
 
-            // Register hotkey (TODO: make user-configurable)
-            IntPtr hWnd = getMainWindowHwnd();
-            Win32.RegisterHotKey(hWnd, 0, Win32.MOD_NOREPEAT | Win32.MOD_CONTROL | Win32.MOD_SHIFT, KeyInterop.VirtualKeyFromKey(Key.U));
+            // Register global hotkey (has to be done after this window is created)
+            ((App)Application.Current).UpdateHotkey();
         }
 
         private void InitializeNotifyIcon()
@@ -78,11 +77,6 @@ namespace Unicodex
         private void NotifyIcon_MenuItem_Exit_Click(object sender, EventArgs e)
         {
             Shutdown();
-        }
-
-        private IntPtr getMainWindowHwnd()
-        {
-            return (IntPtr)new WindowInteropHelper(Application.Current.MainWindow).Handle.ToInt32();
         }
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
