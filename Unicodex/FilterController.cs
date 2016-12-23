@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -16,7 +17,7 @@ namespace Unicodex.Controller
         protected ListView results;
         protected TextBox input;
 
-        public UnicodexFilter Filter { get; protected set; }
+        public Filter Filter { get; protected set; }
 
         protected FilterController(MainWindow window, ListView results, TextBox input)
         {
@@ -127,14 +128,25 @@ namespace Unicodex.Controller
 
     public class FavoritesController : FilterController
     {
-        public FavoritesController(MainWindow window, UnicodexFilter searchFilter) : base(window, window.FavoritesResults, window.FavoritesTextBox)
+        public FavoritesController(MainWindow window) : base(window, window.FavoritesResults, window.FavoritesTextBox)
         {
-            Filter = new UnicodexFilter();
+            Properties.Settings.Default.Favorites.CollectionChanged += Favorites_CollectionChanged;
+            Initialize();
+        }
+
+        private void Favorites_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            Filter = new Filter();
             Filter.ReturnAllCharactersOnEmptyQuery = true;
 
-            foreach (string codepoint in Properties.Settings.Default.Favorites)
+            foreach (string codepointHex in Properties.Settings.Default.Favorites.FavoriteSet)
             {
-                Filter.Add(searchFilter.GetByCodepoint(codepoint));
+                Filter.Add(((App)Application.Current).Characters.AllCharactersByCodepointHex[codepointHex]);
             }
 
             /* Because an empty query returns results for this filter, we need
@@ -148,19 +160,11 @@ namespace Unicodex.Controller
     {
         public SearchController(MainWindow window) : base(window, window.SearchResults, window.SearchTextBox)
         {
-            Filter = new UnicodexFilter();
+            Filter = new Filter();
 
-            using (StringReader unicodeDataLines = new StringReader(Properties.Resources.UnicodeData))
+            foreach (Character c in ((App) Application.Current).Characters.AllCharacters)
             {
-                string unicodeDataLine = string.Empty;
-                while (true)
-                {
-                    unicodeDataLine = unicodeDataLines.ReadLine();
-                    if (unicodeDataLine == null) break;
-                    UnicodeDataEntry entry = new UnicodeDataEntry(unicodeDataLine);
-                    Character c = new Character(entry);
-                    Filter.Add(c);
-                }
+                Filter.Add(c);
             }
         }
     }

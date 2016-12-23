@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Unicodex.Properties;
 
 namespace Unicodex.View
 {
@@ -20,6 +21,32 @@ namespace Unicodex.View
         public string Name { get; private set; }
         public string Value { get; private set; }
         public bool HasSpecialValue { get; private set; }
+
+        public bool IsFavorite
+        {
+            get
+            {
+                return Settings.Default.Favorites.IsFavorite(Model.CodepointHex);
+            }
+
+            set
+            {
+                bool changed;
+                if (value)
+                {
+                    changed = Settings.Default.Favorites.AddFavorite(Model.CodepointHex);
+                }
+                else
+                {
+                    changed = Settings.Default.Favorites.RemoveFavorite(Model.CodepointHex);
+                }
+                if (changed)
+                {
+                    Settings.Default.Save();
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         public Character(Model.Character c)
         {

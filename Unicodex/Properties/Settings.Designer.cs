@@ -25,25 +25,23 @@ namespace Unicodex.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" />")]
-        public global::System.Collections.Specialized.StringCollection Favorites {
+        public global::Unicodex.Preferences Preferences {
             get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["Favorites"]));
+                return ((global::Unicodex.Preferences)(this["Preferences"]));
             }
             set {
-                this["Favorites"] = value;
+                this["Preferences"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::Unicodex.UnicodexSettings UnicodexSettings {
+        public global::Unicodex.Favorites Favorites {
             get {
-                return ((global::Unicodex.UnicodexSettings)(this["UnicodexSettings"]));
+                return ((global::Unicodex.Favorites)(this["Favorites"]));
             }
             set {
-                this["UnicodexSettings"] = value;
+                this["Favorites"] = value;
             }
         }
     }

@@ -125,16 +125,16 @@ namespace Unicodex
 
     class FavoritesCache : Cache
     {
-        private IList<string> favorites;
+        private Favorites favorites;
 
-        public FavoritesCache(IList<string> favorites) : base()
+        public FavoritesCache(Favorites favorites) : base()
         {
             this.favorites = favorites;
         }
 
         public override void Add(Character c)
         {
-            if (favorites.Contains(c.CodepointHex))
+            if (favorites.IsFavorite(c.CodepointHex))
             {
                 base.Add(c);
             }

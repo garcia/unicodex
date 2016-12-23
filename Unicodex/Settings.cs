@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -10,7 +12,7 @@ using System.Windows.Markup;
 namespace Unicodex
 {
     [Serializable]
-    public class UnicodexSettings
+    public class Preferences
     {
         public Boolean runOnStartup { get; set; }
         public Boolean globalHotkeyCtrl { get; set; }
@@ -24,7 +26,7 @@ namespace Unicodex
         public PlacementInOut insideOutsidePlacement { get; set; }
         public PlacementSide monitorPlacement { get; set; }
 
-        public UnicodexSettings()
+        public Preferences()
         {
             runOnStartup = true;
             globalHotkeyCtrl = true;
@@ -81,5 +83,48 @@ namespace Unicodex
         INSIDE,
         [Description("Outside")]
         OUTSIDE
+    }
+
+    [Serializable]
+    public class Favorites : INotifyCollectionChanged
+    {
+        public HashSet<string> FavoriteSet { get; private set; }
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+        public Favorites()
+        {
+            FavoriteSet = new HashSet<string>();
+            
+        }
+
+        private void OnCollectionChanged(NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            CollectionChanged?.Invoke(this, notifyCollectionChangedEventArgs);
+        }
+
+        public bool IsFavorite(string hexCodepoint)
+        {
+            return FavoriteSet.Contains(hexCodepoint);
+        }
+
+        public bool AddFavorite(string hexCodepoint)
+        {
+            bool added= FavoriteSet.Add(hexCodepoint);
+            if (added)
+            {
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, hexCodepoint));
+            }
+            return added;
+        }
+
+        public bool RemoveFavorite(string hexCodepoint)
+        {
+            bool removed = FavoriteSet.Remove(hexCodepoint);
+            if (removed)
+            {
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, hexCodepoint));
+            }
+            return removed;
+        }
     }
 }

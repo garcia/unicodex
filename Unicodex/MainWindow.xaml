@@ -158,7 +158,8 @@
                                         Style="{StaticResource FavoriteButtonStyle}"
                                         Background="Transparent"
                                         HorizontalAlignment="Center"
-                                        VerticalAlignment="Center" />
+                                        VerticalAlignment="Center"
+                                        IsChecked="{Binding IsFavorite}" />
 
                                     <Grid.ContextMenu>
                                         <ContextMenu>

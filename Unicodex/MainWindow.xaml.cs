@@ -32,7 +32,7 @@ namespace Unicodex
 
             // Create filter controllers
             search = new SearchController(this);
-            favorites = new FavoritesController(this, search.Filter);
+            favorites = new FavoritesController(this);
 
             // Add WndProc handler
             HwndSource source = PresentationSource.FromVisual(this) as HwndSource;
@@ -130,9 +130,9 @@ namespace Unicodex
             {
                 /* Window is becoming visible - spawn it according to the
                  * user's preferences */
-                if (!Settings.Default.UnicodexSettings.spawnNearTextCaret || !putNearTextCaret())
+                if (!Settings.Default.Preferences.spawnNearTextCaret || !putNearTextCaret())
                 {
-                    var spawnPlacement = Settings.Default.UnicodexSettings.spawnPlacement;
+                    var spawnPlacement = Settings.Default.Preferences.spawnPlacement;
                     switch (spawnPlacement)
                     {
                         case SpawnPlacement.SPAWN_NEAR_CURSOR:
@@ -181,8 +181,8 @@ namespace Unicodex
                     bool success2 = Win32.GetWindowRect(gui.hwndActive, ref windowRect);
                     if (success2)
                     {
-                        var windowPlacement = Settings.Default.UnicodexSettings.windowPlacement;
-                        var insideOutsidePlacement = Settings.Default.UnicodexSettings.insideOutsidePlacement;
+                        var windowPlacement = Settings.Default.Preferences.windowPlacement;
+                        var insideOutsidePlacement = Settings.Default.Preferences.insideOutsidePlacement;
                         WindowUtils.PutWindowNear(this, windowRect.asRect(), windowPlacement, insideOutsidePlacement);
                     }
                 }
@@ -230,7 +230,7 @@ namespace Unicodex
                 rect = new Rect(left, top, 0, 0);
             }
 
-            PlacementSide monitorPlacement = Settings.Default.UnicodexSettings.monitorPlacement;
+            PlacementSide monitorPlacement = Settings.Default.Preferences.monitorPlacement;
             WindowUtils.PutWindowNear(this, WindowUtils.MonitorWorkAreaFromRect(rect), monitorPlacement, PlacementInOut.INSIDE);
             
         }
@@ -340,14 +340,7 @@ namespace Unicodex
         {
             MenuItem menuItem = (MenuItem)sender;
             View.Character character = (View.Character)menuItem.DataContext;
-
-            // Update settings with new favorite
-            Properties.Settings.Default.Favorites.Add(character.Model.CodepointHex);
-            Properties.Settings.Default.Save();
-
-            // Refresh UI
-            favorites.Filter.Add(character.Model);
-            favorites.UpdateResults();
+            character.IsFavorite = true;
         }
 
         private void NavButton_MenuItem_Settings_Click(object sender, RoutedEventArgs e)

@@ -12,14 +12,23 @@ namespace Unicodex
     /// </summary>
     public partial class App : Application
     {
+        public Characters Characters { get; private set; }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            if (Settings.Default.UnicodexSettings == null)
+            if (Settings.Default.Preferences == null)
             {
-                Settings.Default.UnicodexSettings = new UnicodexSettings();
+                Settings.Default.Preferences = new Preferences();
             }
+
+            if (Settings.Default.Favorites == null)
+            {
+                Settings.Default.Favorites = new Favorites();
+            }
+
+            Characters = new Characters();
         }
 
         internal void UpdateHotkey()
@@ -27,12 +36,12 @@ namespace Unicodex
             IntPtr hWnd = getMainWindowHwnd();
 
             int modifiers = Win32.MOD_NOREPEAT;
-            if (Settings.Default.UnicodexSettings.globalHotkeyCtrl) modifiers |= Win32.MOD_CONTROL;
-            if (Settings.Default.UnicodexSettings.globalHotkeyAlt) modifiers |= Win32.MOD_ALT;
-            if (Settings.Default.UnicodexSettings.globalHotkeyShift) modifiers |= Win32.MOD_SHIFT;
-            if (Settings.Default.UnicodexSettings.globalHotkeyWin) modifiers |= Win32.MOD_WIN;
+            if (Settings.Default.Preferences.globalHotkeyCtrl) modifiers |= Win32.MOD_CONTROL;
+            if (Settings.Default.Preferences.globalHotkeyAlt) modifiers |= Win32.MOD_ALT;
+            if (Settings.Default.Preferences.globalHotkeyShift) modifiers |= Win32.MOD_SHIFT;
+            if (Settings.Default.Preferences.globalHotkeyWin) modifiers |= Win32.MOD_WIN;
 
-            int vk = KeyInterop.VirtualKeyFromKey(Settings.Default.UnicodexSettings.globalHotkeyNonModifier);
+            int vk = KeyInterop.VirtualKeyFromKey(Settings.Default.Preferences.globalHotkeyNonModifier);
 
             Win32.UnregisterHotKey(hWnd, 0);
             if (!Win32.RegisterHotKey(hWnd, 0, modifiers, vk))

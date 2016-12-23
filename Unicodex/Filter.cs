@@ -6,13 +6,13 @@ using Unicodex.Model;
 
 namespace Unicodex
 {
-    public class UnicodexFilter
+    public class Filter
     {
         private List<Character> allCharacters = new List<Character>();
 
         private Cache[] Caches = new Cache[]
         {
-            new FavoritesCache(Properties.Settings.Default.Favorites.Cast<string>().ToList()),
+            new FavoritesCache(Properties.Settings.Default.Favorites),
             //new NameCache(),
             //new FirstWordCache(),
             new AllWordsCache(),
