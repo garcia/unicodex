@@ -61,7 +61,7 @@ namespace Unicodex
                 // Window is opening - put it near the cursor
                 int left = System.Windows.Forms.Cursor.Position.X;
                 int top = System.Windows.Forms.Cursor.Position.Y;
-                WindowUtils.PutWindowNear(this, left, top, top);
+                WindowUtils.PutWindowNear(this, new Rect(left, top, 0, 0), PlacementSide.CENTER, PlacementInOut.INSIDE);
             }
         }
 

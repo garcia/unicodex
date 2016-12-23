@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Windows;
 
 namespace Unicodex
 {
@@ -36,6 +37,19 @@ namespace Unicodex
             public int top;
             public int right;
             public int bottom;
+
+            public RECT(Rect r)
+            {
+                this.left = (int)r.Left;
+                this.top = (int)r.Top;
+                this.right = (int)r.Right;
+                this.bottom = (int)r.Bottom;
+            }
+
+            public Rect asRect()
+            {
+                return new Rect(left, top, right - left, bottom - top);
+            }
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -62,6 +76,17 @@ namespace Unicodex
             {
                 this.X = x;
                 this.Y = y;
+            }
+
+            public POINT(Point p)
+            {
+                this.X = (int)p.X;
+                this.Y = (int)p.Y;
+            }
+
+            public Point asPoint()
+            {
+                return new Point(X, Y);
             }
         }
 

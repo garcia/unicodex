@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using Unicodex.Controller;
+using Unicodex.Properties;
 
 namespace Unicodex
 {
@@ -127,49 +128,26 @@ namespace Unicodex
             }
             else
             {
-                /* Window is becoming visible - we want to put it somewhere
-                 * where the user will immediately see it, ideally right where
-                 * they were typing. */
-                Win32.GUITHREADINFO gui = new Win32.GUITHREADINFO();
-                gui.cbSize = Marshal.SizeOf(gui);
-                bool success = Win32.GetGUIThreadInfo(0, ref gui);
-                if (success)
+                /* Window is becoming visible - spawn it according to the
+                 * user's preferences */
+                if (!Settings.Default.UnicodexSettings.spawnNearTextCaret || !putNearTextCaret())
                 {
-                    if (gui.hwndCaret == IntPtr.Zero)
+                    var spawnPlacement = Settings.Default.UnicodexSettings.spawnPlacement;
+                    switch (spawnPlacement)
                     {
-                        /* The focused application has no caret information, so
-                         * gracefully degrade by using the cursor position. */
-                        int left = System.Windows.Forms.Cursor.Position.X;
-                        int top = System.Windows.Forms.Cursor.Position.Y;
-                        WindowUtils.PutWindowNear(this, left, top, top);
+                        case SpawnPlacement.SPAWN_NEAR_CURSOR:
+                            spawnNearCursor();
+                            break;
+                        case SpawnPlacement.SPAWN_NEAR_WINDOW:
+                            spawnNearWindow();
+                            break;
+                        case SpawnPlacement.SPAWN_IN_MONITOR:
+                            spawnInMonitor();
+                            break;
+
                     }
-                    else
-                    {
-                        /* The GUI's caret position is relative to its control,
-                         * so get the control's position and add the two. */
-                        Win32.RECT windowRect = new Win32.RECT();
-                        bool success2 = Win32.GetWindowRect(gui.hwndCaret, ref windowRect);
-                        if (success2)
-                        {
-                            int left = windowRect.left + gui.rcCaret.left;
-                            int top = windowRect.top + gui.rcCaret.top;
-                            int bottom = windowRect.top + gui.rcCaret.bottom;
-                            WindowUtils.PutWindowNear(this, left, top, bottom);
-                        }
-                        else
-                        {
-                            /* TODO: before production release, handle these
-                             * exceptions and always fall back to cursor pos */
-                            throw new Win32Exception();
-                        }
-                    }
-                    
                 }
-                else
-                {
-                    // TODO: see above
-                    throw new Win32Exception();
-                }
+
 
                 // Focus textbox once it's re-marked as visible
                 DependencyPropertyChangedEventHandler handler = null;
@@ -182,6 +160,123 @@ namespace Unicodex
             }
         }
 
+        private void spawnNearCursor()
+        {
+            int left = System.Windows.Forms.Cursor.Position.X;
+            int top = System.Windows.Forms.Cursor.Position.Y;
+            WindowUtils.PutWindowNear(this, new Rect(left, top, 0, 0), PlacementSide.CENTER, PlacementInOut.INSIDE);
+        }
+
+        private void spawnNearWindow()
+        {
+            Win32.GUITHREADINFO gui = new Win32.GUITHREADINFO();
+            gui.cbSize = Marshal.SizeOf(gui);
+            bool success = Win32.GetGUIThreadInfo(0, ref gui);
+
+            if (success)
+            {
+                if (gui.hwndActive != IntPtr.Zero)
+                {
+                    Win32.RECT windowRect = new Win32.RECT();
+                    bool success2 = Win32.GetWindowRect(gui.hwndActive, ref windowRect);
+                    if (success2)
+                    {
+                        var windowPlacement = Settings.Default.UnicodexSettings.windowPlacement;
+                        var insideOutsidePlacement = Settings.Default.UnicodexSettings.insideOutsidePlacement;
+                        WindowUtils.PutWindowNear(this, windowRect.asRect(), windowPlacement, insideOutsidePlacement);
+                    }
+                }
+                else
+                {
+                    // No active window -- spawn somewhere in the active monitor instead
+                    spawnInMonitor();
+                }
+            }
+            else
+            {
+                // TODO: log these, don't crash
+                throw new Win32Exception();
+            }
+        }
+
+
+
+        private void spawnInMonitor()
+        {
+            Rect rect = Rect.Empty;
+
+            // Use the active window to determine the active monitor
+            Win32.GUITHREADINFO gui = new Win32.GUITHREADINFO();
+            gui.cbSize = Marshal.SizeOf(gui);
+            bool success = Win32.GetGUIThreadInfo(0, ref gui);
+            if (success)
+            {
+                if (gui.hwndActive != IntPtr.Zero)
+                {
+                    Win32.RECT windowRect = new Win32.RECT();
+                    bool success2 = Win32.GetWindowRect(gui.hwndActive, ref windowRect);
+                    if (success2)
+                    {
+                        rect = windowRect.asRect();
+                    }
+                }
+            }
+
+            // If that fails, use the cursor to determine the active monitor
+            if (rect.IsEmpty)
+            {
+                int left = System.Windows.Forms.Cursor.Position.X;
+                int top = System.Windows.Forms.Cursor.Position.Y;
+                rect = new Rect(left, top, 0, 0);
+            }
+
+            PlacementSide monitorPlacement = Settings.Default.UnicodexSettings.monitorPlacement;
+            WindowUtils.PutWindowNear(this, WindowUtils.MonitorWorkAreaFromRect(rect), monitorPlacement, PlacementInOut.INSIDE);
+            
+        }
+
+        private bool putNearTextCaret()
+        {
+            Win32.GUITHREADINFO gui = new Win32.GUITHREADINFO();
+            gui.cbSize = Marshal.SizeOf(gui);
+            bool success = Win32.GetGUIThreadInfo(0, ref gui);
+            if (success)
+            {
+                if (gui.hwndCaret == IntPtr.Zero)
+                {
+                    /* The focused application has no caret information, so
+                     * gracefully degrade to some alternative method. */
+                    return false;
+                }
+                else
+                {
+                    /* The GUI's caret position is relative to its control,
+                     * so get the control's position and add the two. */
+                    Win32.RECT windowRect = new Win32.RECT();
+                    bool success2 = Win32.GetWindowRect(gui.hwndCaret, ref windowRect);
+                    if (success2)
+                    {
+                        Rect caretRect = gui.rcCaret.asRect();
+                        caretRect.X += windowRect.left;
+                        caretRect.Y += windowRect.top;
+                        WindowUtils.PutWindowNear(this, caretRect, PlacementSide.BOTTOM_LEFT, PlacementInOut.OUTSIDE);
+                        return true;
+                    }
+                    else
+                    {
+                        /* TODO: before production release, handle these
+                         * exceptions and always fall back to cursor pos */
+                        throw new Win32Exception();
+                    }
+                }
+            }
+            else
+            {
+                // TODO: see above
+                throw new Win32Exception();
+            }
+        }
+        
         private void Window_Deactivated(object sender, EventArgs e)
         {
             Hide();
