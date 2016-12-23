@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Bundle Name="Unicodex" Version="1.0.0.0" Manufacturer="garcia.sh" UpgradeCode="b40ec59d-2434-4a22-a071-12cc39c591f7">
+		<BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" />
+		<Chain>
+      <PackageGroupRef Id="NetFx46Web"/>
+      <MsiPackage Id="Unicodex" SourceFile="$(var.UnicodexSetup.TargetPath)"/>
+		</Chain>
+	</Bundle>
+</Wix>

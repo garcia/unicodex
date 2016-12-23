@@ -5,16 +5,38 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unicodex", "Unicodex\Unicodex.csproj", "{85FFF3FB-DCA8-425E-B062-CAAC2571A759}"
 EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "UnicodexSetup", "UnicodexSetup\UnicodexSetup.wixproj", "{E3867131-0A10-4CB3-A8CB-1838A6A36286}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "UnicodexBootstrapper", "UnicodexBootstrapper\UnicodexBootstrapper.wixproj", "{B40EC59D-2434-4A22-A071-12CC39C591F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{85FFF3FB-DCA8-425E-B062-CAAC2571A759}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{85FFF3FB-DCA8-425E-B062-CAAC2571A759}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85FFF3FB-DCA8-425E-B062-CAAC2571A759}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{85FFF3FB-DCA8-425E-B062-CAAC2571A759}.Debug|x86.Build.0 = Debug|Any CPU
 		{85FFF3FB-DCA8-425E-B062-CAAC2571A759}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{85FFF3FB-DCA8-425E-B062-CAAC2571A759}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85FFF3FB-DCA8-425E-B062-CAAC2571A759}.Release|x86.ActiveCfg = Release|Any CPU
+		{85FFF3FB-DCA8-425E-B062-CAAC2571A759}.Release|x86.Build.0 = Release|Any CPU
+		{E3867131-0A10-4CB3-A8CB-1838A6A36286}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{E3867131-0A10-4CB3-A8CB-1838A6A36286}.Debug|x86.ActiveCfg = Debug|x86
+		{E3867131-0A10-4CB3-A8CB-1838A6A36286}.Debug|x86.Build.0 = Debug|x86
+		{E3867131-0A10-4CB3-A8CB-1838A6A36286}.Release|Any CPU.ActiveCfg = Release|x86
+		{E3867131-0A10-4CB3-A8CB-1838A6A36286}.Release|x86.ActiveCfg = Release|x86
+		{E3867131-0A10-4CB3-A8CB-1838A6A36286}.Release|x86.Build.0 = Release|x86
+		{B40EC59D-2434-4A22-A071-12CC39C591F7}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{B40EC59D-2434-4A22-A071-12CC39C591F7}.Debug|x86.ActiveCfg = Debug|x86
+		{B40EC59D-2434-4A22-A071-12CC39C591F7}.Debug|x86.Build.0 = Debug|x86
+		{B40EC59D-2434-4A22-A071-12CC39C591F7}.Release|Any CPU.ActiveCfg = Release|x86
+		{B40EC59D-2434-4A22-A071-12CC39C591F7}.Release|x86.ActiveCfg = Release|x86
+		{B40EC59D-2434-4A22-A071-12CC39C591F7}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

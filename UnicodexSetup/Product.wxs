@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="Unicodex" Language="1033" Version="0.1.0.0" Manufacturer="garcia.sh" UpgradeCode="f0aa75d7-1e4e-48db-94d3-04caa94225b8">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of Unicodex is already installed." />
+    <MediaTemplate />
+
+    <Feature Id="ProductFeature" Title="Unicodex" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+    </Feature>
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="Unicodex" />
+      </Directory>
+    </Directory>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="ProductComponent">
+        <File Source="$(var.Unicodex.TargetPath)" />
+      </Component>
+      <Component Id="ProductConfigComponent">
+        <File Source="$(var.Unicodex.TargetPath).config" />
+      </Component>
+      <Component Id="ProductShellDllComponent">
+        <File Source="$(var.Unicodex.TargetDir)Microsoft.Windows.Shell.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>
