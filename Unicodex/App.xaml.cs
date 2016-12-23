@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.ComponentModel;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -29,6 +31,34 @@ namespace Unicodex
             }
 
             Characters = new Characters();
+        }
+
+        internal void UpdateSettings()
+        {
+            UpdateRunOnStartup();
+            UpdateHotkey();
+        }
+
+        internal void UpdateRunOnStartup()
+        {
+            using (RegistryKey runKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
+            {
+                string keyName = "Unicodex";
+                bool currentRunOnStartupValue = runKey.GetValue(keyName) != null;
+                bool newRunOnStartupValue = Settings.Default.Preferences.runOnStartup;
+
+                if (currentRunOnStartupValue != newRunOnStartupValue)
+                {
+                    if (newRunOnStartupValue)
+                    {
+                        runKey.SetValue(keyName, Assembly.GetEntryAssembly().Location);
+                    }
+                    else
+                    {
+                        runKey.DeleteValue(keyName);
+                    }
+                }
+            }
         }
 
         internal void UpdateHotkey()

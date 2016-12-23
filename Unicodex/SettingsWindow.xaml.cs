@@ -53,8 +53,7 @@ namespace Unicodex
             {
                 // Window is closing - save settings
                 Settings.Default.Save();
-                ((App)Application.Current).UpdateHotkey();
-                // TODO: update autostart
+                ((App)Application.Current).UpdateSettings();
             }
             else
             {
@@ -196,10 +195,10 @@ namespace Unicodex
         #endregion
     }
 
-
-
     public class KeyConverter : IValueConverter
     {
+        #region KeyConverter members
+
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             return Enum.GetName(typeof(Key), value);
@@ -209,5 +208,7 @@ namespace Unicodex
         {
             return (Key)Enum.Parse(typeof(Key), value.ToString());
         }
+
+        #endregion
     }
 }
