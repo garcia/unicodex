@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-
+using System.Windows;
 using Unicodex.Model;
 
 namespace Unicodex
@@ -13,6 +13,7 @@ namespace Unicodex
         private Cache[] Caches = new Cache[]
         {
             new FavoritesCache(Properties.Settings.Default.Favorites),
+            new TagsCache(((App)Application.Current).TagGroups),
             //new NameCache(),
             //new FirstWordCache(),
             new AllWordsCache(),

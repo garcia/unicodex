@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Unicodex.Model;
 
 namespace Unicodex
@@ -146,6 +147,47 @@ namespace Unicodex
             {
                 yield return word[0].ToString();
             }
+        }
+    }
+
+    class TagsCache : Cache
+    {
+        private TagGroups tagGroups;
+        private Regex quoteRegex = new Regex(@"(?<=\s""|^"")\S[^""]*?\S(?=""\s|""$)", RegexOptions.Compiled);
+
+        public TagsCache(TagGroups tagGroups) : base()
+        {
+            this.tagGroups = tagGroups;
+        }
+
+        public override IEnumerable<string> GetKeys(SplitString s)
+        {
+            Character c = (Character)s;
+            List<string> tags = tagGroups.GetTags(c.CodepointHex);
+            foreach (string tag in tags)
+            {
+                yield return tag.ToUpper();
+            }
+        }
+
+        public override IEnumerable<string> GetQueryKeys(SplitString s)
+        {
+            foreach (string word in s.Split)
+            {
+                yield return word.TrimStart('#');
+            }
+
+            MatchCollection quotedStrings = quoteRegex.Matches(s.Unsplit);
+
+            foreach (Match quotedString in quotedStrings)
+            {
+                yield return quotedString.Groups[0].Value.TrimStart('#');
+            }
+        }
+
+        public override bool Matches(Query query, Character cacheHit)
+        {
+            return true;
         }
     }
 }

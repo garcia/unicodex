@@ -14,7 +14,6 @@ namespace Unicodex
         public Tags BlockTags { get; private set; }
         public Tags CategoryTags { get; private set; }
 
-
         private Tags[] AllTags;
 
         public TagGroups(Characters characters)
