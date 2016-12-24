@@ -4,10 +4,12 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Markup;
+using System.Xml.Serialization;
 
 namespace Unicodex
 {
@@ -133,20 +135,46 @@ namespace Unicodex
     [Serializable]
     public class Tags
     {
-        public Dictionary<string, List<string>> tagToCodepoints { get; private set; }
-        public Dictionary<string, List<string>> codepointToTags { get; private set; }
+        [XmlIgnore]
+        public Dictionary<string, List<string>> TagToCodepoints { get; private set; }
+
+        [XmlIgnore]
+        public Dictionary<string, List<string>> CodepointToTags { get; private set; }
+
+        public TagPair[] TagPairs
+        {
+            get
+            {
+                List<TagPair> pairs = new List<TagPair>();
+                foreach (string codepoint in CodepointToTags.Keys)
+                {
+                    foreach (string tag in CodepointToTags[codepoint])
+                    {
+                        pairs.Add(new TagPair(codepoint, tag));
+                    }
+                }
+                return pairs.ToArray();
+            }
+            set
+            {
+                foreach (TagPair pair in value)
+                {
+                    AddTag(pair.Codepoint, pair.Tag);
+                }
+            }
+        }
 
         public Tags()
         {
-            tagToCodepoints = new Dictionary<string, List<string>>();
-            codepointToTags = new Dictionary<string, List<string>>();
+            TagToCodepoints = new Dictionary<string, List<string>>();
+            CodepointToTags = new Dictionary<string, List<string>>();
         }
 
         public IEnumerable<string> GetTags(string codepoint)
         {
-            if (codepointToTags.ContainsKey(codepoint))
+            if (CodepointToTags.ContainsKey(codepoint))
             {
-                return codepointToTags[codepoint];
+                return CodepointToTags[codepoint];
             }
             else
             {
@@ -157,9 +185,9 @@ namespace Unicodex
 
         public IEnumerable<string> GetCodepoints(string tag)
         {
-            if (tagToCodepoints.ContainsKey(tag))
+            if (TagToCodepoints.ContainsKey(tag))
             {
-                return tagToCodepoints[tag];
+                return TagToCodepoints[tag];
             }
             else
             {
@@ -169,30 +197,56 @@ namespace Unicodex
 
         public void AddTag(string codepoint, string tag)
         {
-            if (!tagToCodepoints.ContainsKey(tag))
+            /* Make sure this tag doesn't already exist. Why not use a set?
+             * Because the user might care about the order of their tags. */
+            if (CodepointToTags.ContainsKey(codepoint))
             {
-                tagToCodepoints[tag] = new List<string>();
+                string upperTag = tag.ToUpper();
+                foreach (string existingTag in CodepointToTags[codepoint])
+                {
+                    if (upperTag == existingTag.ToUpper()) return;
+                }
             }
-            tagToCodepoints[tag].Add(codepoint);
 
-            if (!codepointToTags.ContainsKey(codepoint))
+            if (!TagToCodepoints.ContainsKey(tag))
             {
-                codepointToTags[codepoint] = new List<string>();
+                TagToCodepoints[tag] = new List<string>();
             }
-            codepointToTags[codepoint].Add(tag);
+            TagToCodepoints[tag].Add(codepoint);
+
+            if (!CodepointToTags.ContainsKey(codepoint))
+            {
+                CodepointToTags[codepoint] = new List<string>();
+            }
+            CodepointToTags[codepoint].Add(tag);
         }
 
         public void RemoveTag(string codepoint, string tag)
         {
-            if (tagToCodepoints.ContainsKey(tag))
+            if (TagToCodepoints.ContainsKey(tag))
             {
-                tagToCodepoints[tag].Remove(codepoint);
+                TagToCodepoints[tag].Remove(codepoint);
             }
 
-            if (codepointToTags.ContainsKey(codepoint))
+            if (CodepointToTags.ContainsKey(codepoint))
             {
-                codepointToTags[codepoint].Remove(tag);
+                CodepointToTags[codepoint].Remove(tag);
             }
+        }
+    }
+
+    [Serializable]
+    public class TagPair
+    {
+        public string Codepoint { get; set; }
+        public string Tag { get; set; }
+
+        public TagPair() { }
+
+        public TagPair(string codepoint, string tag)
+        {
+            Codepoint = codepoint;
+            Tag = tag;
         }
     }
 }

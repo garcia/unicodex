@@ -343,6 +343,14 @@ namespace Unicodex
             character.IsFavorite = true;
         }
 
+        private void Search_MenuItem_EditTags_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            View.Character character = (View.Character)menuItem.DataContext;
+            EditTagsWindow editTagsWindow = new EditTagsWindow(character);
+            editTagsWindow.Show();
+        }
+
         private void NavButton_MenuItem_Settings_Click(object sender, RoutedEventArgs e)
         {
             SettingsWindow settingsWindow = new SettingsWindow();

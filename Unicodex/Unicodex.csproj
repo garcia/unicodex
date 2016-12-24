@@ -84,6 +84,9 @@
     <Compile Include="Characters.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="TagGroups.cs" />
+    <Compile Include="EditTagsWindow.xaml.cs">
+      <DependentUpon>EditTagsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WindowUtils.cs" />
     <Compile Include="FilterController.cs" />
     <Compile Include="Win32.cs" />
@@ -106,6 +109,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="SettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditTagsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

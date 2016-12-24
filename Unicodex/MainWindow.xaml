@@ -225,6 +225,11 @@
                                                     <TextBlock Text="&#xE734;" Style="{StaticResource IconStyle}" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" />
                                                 </MenuItem.Icon>
                                             </MenuItem>
+                                            <MenuItem x:Name="EditTags" Header="Edit tags" Click="Search_MenuItem_EditTags_Click">
+                                                <MenuItem.Icon>
+                                                    <TextBlock Text="&#xE8EC;" Style="{StaticResource IconStyle}" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
                                         </ContextMenu>
                                     </Grid.ContextMenu>
                                 </Grid>
