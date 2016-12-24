@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows;
 using Unicodex.Properties;
 
 namespace Unicodex.View
@@ -9,8 +11,7 @@ namespace Unicodex.View
 
         protected void RaisePropertyChanged(string propertyName = "")
         {
-            var handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 
@@ -45,6 +46,14 @@ namespace Unicodex.View
                     Settings.Default.Save();
                     RaisePropertyChanged();
                 }
+            }
+        }
+
+        public List<string> Tags
+        {
+            get
+            {
+                return ((App)Application.Current).TagGroups.GetTags(Model.CodepointHex);
             }
         }
 

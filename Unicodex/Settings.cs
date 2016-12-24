@@ -127,4 +127,70 @@ namespace Unicodex
             return removed;
         }
     }
+
+    [Serializable]
+    public class Tags
+    {
+        public Dictionary<string, List<string>> tagToCodepoints { get; private set; }
+        public Dictionary<string, List<string>> codepointToTags { get; private set; }
+
+        public Tags()
+        {
+            tagToCodepoints = new Dictionary<string, List<string>>();
+            codepointToTags = new Dictionary<string, List<string>>();
+        }
+
+        public IEnumerable<string> GetTags(string codepoint)
+        {
+            if (codepointToTags.ContainsKey(codepoint))
+            {
+                return codepointToTags[codepoint];
+            }
+            else
+            {
+                return Enumerable.Empty<string>();
+            }
+            
+        }
+
+        public IEnumerable<string> GetCodepoints(string tag)
+        {
+            if (tagToCodepoints.ContainsKey(tag))
+            {
+                return tagToCodepoints[tag];
+            }
+            else
+            {
+                return Enumerable.Empty<string>();
+            }
+        }
+
+        public void AddTag(string codepoint, string tag)
+        {
+            if (!tagToCodepoints.ContainsKey(tag))
+            {
+                tagToCodepoints[tag] = new List<string>();
+            }
+            tagToCodepoints[tag].Add(codepoint);
+
+            if (!codepointToTags.ContainsKey(codepoint))
+            {
+                codepointToTags[codepoint] = new List<string>();
+            }
+            codepointToTags[codepoint].Add(tag);
+        }
+
+        public void RemoveTag(string codepoint, string tag)
+        {
+            if (tagToCodepoints.ContainsKey(tag))
+            {
+                tagToCodepoints[tag].Remove(codepoint);
+            }
+
+            if (codepointToTags.ContainsKey(codepoint))
+            {
+                codepointToTags[codepoint].Remove(tag);
+            }
+        }
+    }
 }

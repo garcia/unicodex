@@ -83,6 +83,7 @@
     <Compile Include="Cache.cs" />
     <Compile Include="Characters.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="TagGroups.cs" />
     <Compile Include="WindowUtils.cs" />
     <Compile Include="FilterController.cs" />
     <Compile Include="Win32.cs" />
@@ -156,6 +157,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="TODO.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Blocks.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -61,6 +61,30 @@ namespace Unicodex.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to # Blocks-9.0.0.txt
+        ///# Date: 2016-02-05, 23:48:00 GMT [KW]
+        ///# © 2016 Unicode®, Inc.
+        ///# For terms of use, see http://www.unicode.org/terms_of_use.html
+        ///#
+        ///# Unicode Character Database
+        ///# For documentation, see http://www.unicode.org/reports/tr44/
+        ///#
+        ///# Format:
+        ///# Start Code..End Code; Block Name
+        ///
+        ///# ================================================
+        ///
+        ///# Note:   When comparing block names, casing, whitespace, hyphens,
+        ///#         and underbars are ignored.
+        ///#         For example, &quot;Latin Extended-A&quot; and &quot;latin extended a&quot; are  [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Blocks {
+            get {
+                return ResourceManager.GetString("Blocks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon main {

@@ -59,6 +59,7 @@ namespace Unicodex.Model
         public int Codepoint { get; private set; }
         public string Name { get; private set; }
         public string[] NameWords { get; private set; }
+        public string Category { get; private set; }
 
         public string CodepointHex { get { return Codepoint.ToString("X4"); } }
         public override string Unsplit { get { return Name; } }
@@ -80,6 +81,8 @@ namespace Unicodex.Model
             }
 
             NameWords = Name.Split(new char[] { ' ' });
+
+            Category = entry.GeneralCategory;
         }
     }
 

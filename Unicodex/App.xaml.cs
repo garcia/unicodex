@@ -15,6 +15,7 @@ namespace Unicodex
     public partial class App : Application
     {
         public Characters Characters { get; private set; }
+        public TagGroups TagGroups { get; private set; }
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -31,6 +32,7 @@ namespace Unicodex
             }
 
             Characters = new Characters();
+            TagGroups = new TagGroups(Characters);
         }
 
         internal void UpdateSettings()

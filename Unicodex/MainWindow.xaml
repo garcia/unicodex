@@ -150,7 +150,59 @@
 
                                     <TextBlock Text="{Binding Codepoint}" Grid.Row="1" FontSize="12" HorizontalAlignment="Center" Padding="5" Foreground="#666666" />
 
-                                    <TextBlock Text="{Binding Name}" Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Center" FontSize="16" TextTrimming="CharacterEllipsis" />
+                                    <Grid Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Center">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Text="{Binding Name}" Grid.Row="0" FontSize="16" TextTrimming="CharacterEllipsis" />
+                                        <ListView Grid.Row="1"
+                                                  BorderThickness="0"
+                                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                  ItemsSource="{Binding Tags}"
+                                                  Background="Transparent"
+                                                  BorderBrush="Transparent">
+                                            <ListView.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel Orientation="Horizontal" />
+                                                </ItemsPanelTemplate>
+                                            </ListView.ItemsPanel>
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition />
+                                                            <ColumnDefinition />
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="#" Grid.Column="0" Foreground="#FFAFAFAF" />
+                                                        <TextBlock Text="{Binding}" Grid.Column="1" Foreground="#FF5F5F5F" />
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                            <ListView.Resources>
+                                                <Style TargetType="ListView">
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate>
+                                                                <ItemsPresenter></ItemsPresenter>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                                <Style TargetType="ListViewItem">
+                                                    <Setter Property="Background" Value="Transparent" />
+                                                    <Setter Property="Margin" Value="0,0,10,0" />
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                                <ContentPresenter IsHitTestVisible="False" />
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </ListView.Resources>
+                                        </ListView>
+                                    </Grid>
 
                                     <ToggleButton 
                                         Grid.Column="2"
@@ -287,8 +339,8 @@
             <TabItem Style="{StaticResource TabHeaderNormalStyle}">
                 <TabItem.Header>
                     <StackPanel Style="{StaticResource TabHeaderStackPanelStyle}">
-                        <TextBlock Text="&#xE8A9;" Style="{StaticResource TabHeaderIconStyle}" />
-                        <TextBlock Text="Blocks" Grid.Row="2" Style="{StaticResource TabHeaderTextStyle}" />
+                        <TextBlock Text="&#xE8EC;" Style="{StaticResource TabHeaderIconStyle}" />
+                        <TextBlock Text="Tags" Grid.Row="2" Style="{StaticResource TabHeaderTextStyle}" />
                     </StackPanel>
                 </TabItem.Header>
             </TabItem>
@@ -306,7 +358,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    
+
                     <TextBox
                         x:Name="FavoritesTextBox"
                         TextWrapping="Wrap"

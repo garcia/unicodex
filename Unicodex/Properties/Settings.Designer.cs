@@ -44,5 +44,16 @@ namespace Unicodex.Properties {
                 this["Favorites"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::Unicodex.Tags UserTags {
+            get {
+                return ((global::Unicodex.Tags)(this["UserTags"]));
+            }
+            set {
+                this["UserTags"] = value;
+            }
+        }
     }
 }

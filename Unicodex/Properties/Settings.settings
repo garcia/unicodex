@@ -8,5 +8,8 @@
     <Setting Name="Favorites" Type="Unicodex.Favorites" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="UserTags" Type="Unicodex.Tags" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>
