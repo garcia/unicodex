@@ -60,7 +60,7 @@ namespace Unicodex
                     int start = Convert.ToInt32(endpoints[0], 16);
                     int end = Convert.ToInt32(endpoints[1], 16);
 
-                    foreach (int codepoint in Enumerable.Range(start, end - start))
+                    foreach (int codepoint in Enumerable.Range(start, end - start + 1))
                     {
                         BlockTags.AddTag(codepoint.ToString("X4"), blockName);
                     }
