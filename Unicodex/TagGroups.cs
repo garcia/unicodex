@@ -10,9 +10,10 @@ namespace Unicodex
     public class TagGroups
     {
         public Tags UserTags { get; private set; }
-        public Tags MiscellaneousTags { get; private set; }
         public Tags BlockTags { get; private set; }
         public Tags CategoryTags { get; private set; }
+        public Tags EmojiTags { get; private set; }
+        public Tags AliasTags { get; private set; }
 
         private Tags[] AllTags;
 
@@ -24,14 +25,15 @@ namespace Unicodex
             }
             UserTags = Settings.Default.UserTags;
 
-            MiscellaneousTags = new Tags();
-            BlockTags = new Tags();
-            CategoryTags = new Tags();
+            BlockTags = new BlockTags();
+            CategoryTags = new CategoryTags();
+            EmojiTags = new EmojiTags();
+            AliasTags = new AliasTags();
 
             populateCategoryTags(characters);
             populateBlockTags();
 
-            AllTags = new Tags[] { BlockTags, CategoryTags, MiscellaneousTags, UserTags };
+            AllTags = new Tags[] { BlockTags, CategoryTags, EmojiTags, AliasTags, UserTags };
         }
 
         private void populateCategoryTags(Characters characters)
@@ -85,11 +87,46 @@ namespace Unicodex
 
             foreach (Tags tagGroup in AllTags)
             {
-                results.AddRange(tagGroup.GetTags(codepoint));
+                if (tagGroup.IsEnabled())
+                {
+                    results.AddRange(tagGroup.GetTags(codepoint));
+                }
             }
 
             return results;
         }
 
+    }
+
+    public class BlockTags : Tags
+    {
+        public override bool IsEnabled()
+        {
+            return Settings.Default.Preferences.builtInTagsBlock;
+        }
+    }
+
+    public class CategoryTags : Tags
+    {
+        public override bool IsEnabled()
+        {
+            return Settings.Default.Preferences.builtInTagsCategory;
+        }
+    }
+
+    public class EmojiTags : Tags
+    {
+        public override bool IsEnabled()
+        {
+            return Settings.Default.Preferences.builtInTagsEmoji;
+        }
+    }
+
+    public class AliasTags : Tags
+    {
+        public override bool IsEnabled()
+        {
+            return Settings.Default.Preferences.builtInTagsAlias;
+        }
     }
 }

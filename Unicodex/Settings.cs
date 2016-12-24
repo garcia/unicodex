@@ -16,18 +16,22 @@ namespace Unicodex
     [Serializable]
     public class Preferences
     {
-        public Boolean runOnStartup { get; set; }
+        public bool runOnStartup { get; set; }
         public int maxSearchResults { get; set; }
-        public Boolean globalHotkeyCtrl { get; set; }
-        public Boolean globalHotkeyAlt { get; set; }
-        public Boolean globalHotkeyShift { get; set; }
-        public Boolean globalHotkeyWin { get; set; }
+        public bool globalHotkeyCtrl { get; set; }
+        public bool globalHotkeyAlt { get; set; }
+        public bool globalHotkeyShift { get; set; }
+        public bool globalHotkeyWin { get; set; }
         public Key globalHotkeyNonModifier { get; set; }
-        public Boolean spawnNearTextCaret { get; set; }
+        public bool spawnNearTextCaret { get; set; }
         public SpawnPlacement spawnPlacement { get; set; }
         public PlacementSide windowPlacement { get; set; }
         public PlacementInOut insideOutsidePlacement { get; set; }
         public PlacementSide monitorPlacement { get; set; }
+        public bool builtInTagsBlock { get; set; }
+        public bool builtInTagsCategory { get; set; }
+        public bool builtInTagsEmoji { get; set; }
+        public bool builtInTagsAlias { get; set; }
 
         public Preferences()
         {
@@ -43,6 +47,10 @@ namespace Unicodex
             windowPlacement = PlacementSide.CENTER;
             insideOutsidePlacement = PlacementInOut.INSIDE;
             monitorPlacement = PlacementSide.CENTER;
+            builtInTagsBlock = true;
+            builtInTagsCategory = false;
+            builtInTagsEmoji = true;
+            builtInTagsAlias = true;
         }
     }
 
@@ -232,6 +240,11 @@ namespace Unicodex
             {
                 CodepointToTags[codepoint].Remove(tag);
             }
+        }
+
+        public virtual bool IsEnabled()
+        {
+            return true;
         }
     }
 
