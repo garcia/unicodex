@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Xml.Serialization;
 
 namespace Unicodex.Model
@@ -89,33 +90,103 @@ namespace Unicodex.Model
     public class Query : SplitString
     {
         public string QueryText { get; private set; }
-        public string[] QueryWords { get; private set; }
+        public string[] QueryFragments { get; private set; }
 
         public override string Unsplit { get { return QueryText; } }
-        public override string[] Split { get { return QueryWords; } }
+        public override string[] Split { get { return QueryFragments; } }
 
         public Query(string text)
         {
-            QueryWords = text.ToUpper().Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
-            QueryText = string.Join(" ", QueryWords);
+            QueryFragments = Fragmentize(text);
+            QueryText = string.Join(" ", QueryFragments);
+        }
+
+        private string[] Fragmentize(string text)
+        {
+            List<string> result = new List<string>();
+            string[] words = text.ToUpper().Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
+
+            List<string> partialQuotedString = null;
+            foreach (string word in words)
+            {
+                // Parse quoted substrings as single fragments
+                if (partialQuotedString == null && word.StartsWith("\""))
+                {
+                    partialQuotedString = new List<string>();
+                }
+
+                // Parsing a quoted string - wait until we find the closing "
+                if (partialQuotedString != null)
+                {
+                    partialQuotedString.Add(word);
+                    if (word.EndsWith("\""))
+                    {
+                        AddQuotedString(result, partialQuotedString);
+                        partialQuotedString = null;
+                    }
+                }
+                // Not parsing a quoted string - the word itself is a fragment
+                else
+                {
+                    result.Add(word);
+                }
+            }
+
+            /* If there's an unmatched quotation mark (e.g. if the user is
+             * still typing a quoted string), add the partial string anyway. */
+            if (partialQuotedString != null)
+            {
+                AddQuotedString(result, partialQuotedString);
+            }
+
+            return result.ToArray();
+        }
+
+        private void AddQuotedString(List<string> result, List<string> partialQuotedString)
+        {
+            string quotedString = string.Join(" ", partialQuotedString).Trim('"', ' ');
+            
+            // Prevent empty quoted strings from being added as fragments
+            if (quotedString.Length > 0)
+            {
+                result.Add(quotedString);
+            }
         }
 
         public bool Matches(Character c)
         {
-            foreach (string queryWord in QueryWords)
+            foreach (string queryFragment in QueryFragments)
             {
-                bool matchesQueryWord = false;
+                bool matchesQueryFragment = false;
                 foreach (string nameWord in c.NameWords)
                 {
-                    if (nameWord.StartsWith(queryWord))
+                    if (nameWord.StartsWith(queryFragment))
                     {
-                        matchesQueryWord = true;
+                        matchesQueryFragment = true;
                         break;
                     }
                 }
-                if (!matchesQueryWord)
+                if (!matchesQueryFragment)
                 {
-                    if (c.CodepointHex != queryWord) return false;
+                    // This query fragment doesn't match the character name.
+                    // Check the codepoint:
+                    if (c.CodepointHex == queryFragment) continue;
+
+                    // Check the tags:
+                    List<string> tags = ((App)Application.Current).TagGroups.GetTags(c.CodepointHex);
+                    bool foundMatchingTag = false;
+                    foreach (string tag in tags)
+                    {
+                        if (tag.ToUpper() == queryFragment.TrimStart('#'))
+                        {
+                            foundMatchingTag = true;
+                            break;
+                        }
+                    }
+                    if (foundMatchingTag) continue;
+
+                    // No matches found - cache miss.
+                    return false;
                 }
             }
             return true;

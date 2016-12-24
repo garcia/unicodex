@@ -90,7 +90,7 @@ namespace Unicodex
 
         public override bool Matches(Query query, Character cacheHit)
         {
-            return cacheHit.NameWords[0].StartsWith(query.QueryWords[0]) && base.Matches(query, cacheHit);
+            return cacheHit.NameWords[0].StartsWith(query.QueryFragments[0]) && base.Matches(query, cacheHit);
         }
     }
 
@@ -153,7 +153,6 @@ namespace Unicodex
     class TagsCache : Cache
     {
         private TagGroups tagGroups;
-        private Regex quoteRegex = new Regex(@"(?<=\s""|^"")\S[^""]*?\S(?=""\s|""$)", RegexOptions.Compiled);
 
         public TagsCache(TagGroups tagGroups) : base()
         {
@@ -176,18 +175,6 @@ namespace Unicodex
             {
                 yield return word.TrimStart('#');
             }
-
-            MatchCollection quotedStrings = quoteRegex.Matches(s.Unsplit);
-
-            foreach (Match quotedString in quotedStrings)
-            {
-                yield return quotedString.Groups[0].Value.TrimStart('#');
-            }
-        }
-
-        public override bool Matches(Query query, Character cacheHit)
-        {
-            return true;
         }
     }
 }
