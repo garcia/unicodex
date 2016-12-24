@@ -246,7 +246,7 @@
                                 </Setter>
                             </Style>
                             <Style TargetType="{x:Type ListViewItem}">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="HorizontalAlignment" Value="Stretch" />
                                 <Setter Property="Margin" Value="-4,0" />
                                 <Setter Property="BorderThickness" Value="0" />
                                 <Setter Property="Template">
@@ -263,7 +263,7 @@
                                                     Content="{TemplateBinding ContentControl.Content}"
                                                     ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
                                                     ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
-                                                    HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                                                    HorizontalAlignment="{TemplateBinding Control.HorizontalAlignment}"
                                                     VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
                                                     SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
                                             </Border>
@@ -424,7 +424,6 @@
                                 </Setter>
                             </Style>
                             <Style TargetType="{x:Type ListViewItem}">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                                 <Setter Property="Margin" Value="-4,0" />
                                 <Setter Property="BorderThickness" Value="0" />
                                 <Setter Property="Template">
@@ -441,7 +440,7 @@
                                                     Content="{TemplateBinding ContentControl.Content}"
                                                     ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
                                                     ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
-                                                    HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                                                    HorizontalAlignment="{TemplateBinding Control.HorizontalAlignment}"
                                                     VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
                                                     SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
                                             </Border>
