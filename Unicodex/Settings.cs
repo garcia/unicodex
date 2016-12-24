@@ -15,6 +15,7 @@ namespace Unicodex
     public class Preferences
     {
         public Boolean runOnStartup { get; set; }
+        public int maxSearchResults { get; set; }
         public Boolean globalHotkeyCtrl { get; set; }
         public Boolean globalHotkeyAlt { get; set; }
         public Boolean globalHotkeyShift { get; set; }
@@ -29,6 +30,7 @@ namespace Unicodex
         public Preferences()
         {
             runOnStartup = true;
+            maxSearchResults = 50;
             globalHotkeyCtrl = true;
             globalHotkeyAlt = false;
             globalHotkeyShift = true;

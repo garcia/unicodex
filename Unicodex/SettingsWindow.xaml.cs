@@ -69,6 +69,37 @@ namespace Unicodex
             PlacementSide item = (PlacementSide) e.AddedItems[0];
             insideOutsidePlacement.IsEnabled = (item != PlacementSide.CENTER);
         }
+
+        private void maxSearchResults_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !maxSearchResults_IsValid(e.Text);
+        }
+
+        private void maxSearchResults_Pasting(object sender, DataObjectPastingEventArgs e)
+        {
+            if (e.DataObject.GetDataPresent(typeof(String)))
+            {
+                String Text1 = (String)e.DataObject.GetData(typeof(String));
+                if (!maxSearchResults_IsValid(Text1)) e.CancelCommand();
+            }
+            else
+            {
+                e.CancelCommand();
+            }
+        }
+
+        private bool maxSearchResults_IsValid(string text)
+        {
+            try
+            {
+                int value = int.Parse(text);
+                return value >= 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 
     [ValueConversion(typeof(bool), typeof(bool))]

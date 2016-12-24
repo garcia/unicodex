@@ -21,13 +21,28 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <CheckBox x:Name="runOnStartup"
-                  Content="Run Unicodex on startup"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Top"
-                  Grid.Row="0"
-                  Margin="0,0,0,10"
-                  IsChecked="{Binding runOnStartup, Mode=TwoWay}" />
+        <GroupBox x:Name="generalOptions" Header="General options" Grid.Row="0" Margin="0,0,0,10">
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <CheckBox x:Name="runOnStartup"
+                      Content="Run Unicodex on startup"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Top"
+                      Grid.Row="0"
+                      Grid.ColumnSpan="2"
+                      Margin="0,0,0,10"
+                      IsChecked="{Binding runOnStartup, Mode=TwoWay}" />
+                <TextBlock Text="Maximum search results to display:" Grid.Row="1" Grid.Column="0" Margin="0,0,10,0" />
+                <TextBox Name="maxSearchResults" Text="{Binding maxSearchResults, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" PreviewTextInput="maxSearchResults_PreviewTextInput" DataObject.Pasting="maxSearchResults_Pasting" />
+            </Grid>
+        </GroupBox>
         <GroupBox x:Name="globalHotkey" Header="Global hotkey" Grid.Row="1" Margin="0,0,0,10">
             <Grid Margin="10">
                 <Grid.RowDefinitions>

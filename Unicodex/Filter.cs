@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using Unicodex.Model;
+using Unicodex.Properties;
 
 namespace Unicodex
 {
@@ -84,7 +85,7 @@ namespace Unicodex
                 {
                     results.Add(new View.Character(cacheHit));
                     seenCharacters.Add(cacheHit);
-                    if (results.Count >= 50) break;
+                    if (results.Count >= Settings.Default.Preferences.maxSearchResults) break;
                 }
             }
 
