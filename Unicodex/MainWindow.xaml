@@ -99,7 +99,7 @@
     <Grid>
         <TabControl x:Name="tabControl" Padding="0" BorderThickness="0">
 
-            <TabItem Style="{StaticResource TabHeaderNormalStyle}">
+            <TabItem x:Name="SearchTab" Style="{StaticResource TabHeaderNormalStyle}">
                 <TabItem.Header>
                     <StackPanel Style="{StaticResource TabHeaderStackPanelStyle}">
                         <TextBlock Text="&#xE094;" Style="{StaticResource TabHeaderIconStyle}" />
@@ -125,86 +125,87 @@
                     <ListView Name="SearchResults" Grid.IsSharedSizeScope="True" AlternationCount="2" Grid.Row="1" BorderThickness="0">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <Grid Name="SearchResult" Background="Transparent">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition />
-                                        <RowDefinition />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" SharedSizeGroup="SearchResultColumnSize1" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <TextBlock Text="{Binding Value}" FontSize="36" HorizontalAlignment="Center" Padding="5">
-                                        <TextBlock.Style>
-                                            <Style TargetType="{x:Type TextBlock}">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding HasSpecialValue}" Value="true">
-                                                        <Setter Property="Foreground" Value="Blue" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-
-                                    <TextBlock Text="{Binding Codepoint}" Grid.Row="1" FontSize="12" HorizontalAlignment="Center" Padding="5" Foreground="#666666" />
-
-                                    <Grid Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Center">
+                                <ContentControl MouseDoubleClick="SearchResult_MouseDoubleClick">
+                                    <Grid Name="SearchResult" Background="Transparent">
                                         <Grid.RowDefinitions>
                                             <RowDefinition />
                                             <RowDefinition />
                                         </Grid.RowDefinitions>
-                                        <TextBlock Text="{Binding Name}" Grid.Row="0" FontSize="16" TextTrimming="CharacterEllipsis" />
-                                        <ListView Grid.Row="1"
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="SearchResultColumnSize1" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Text="{Binding Value}" FontSize="36" HorizontalAlignment="Center" Padding="5">
+                                            <TextBlock.Style>
+                                                <Style TargetType="{x:Type TextBlock}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding HasSpecialValue}" Value="true">
+                                                            <Setter Property="Foreground" Value="Blue" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+
+                                        <TextBlock Text="{Binding Codepoint}" Grid.Row="1" FontSize="12" HorizontalAlignment="Center" Padding="5" Foreground="#666666" />
+
+                                        <Grid Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Center">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition />
+                                                <RowDefinition />
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Text="{Binding Name}" Grid.Row="0" FontSize="16" TextTrimming="CharacterEllipsis" />
+                                            <ListView Grid.Row="1"
                                                   BorderThickness="0"
                                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                                   ItemsSource="{Binding Tags}"
                                                   Background="Transparent"
                                                   BorderBrush="Transparent">
-                                            <ListView.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <WrapPanel Orientation="Horizontal" />
-                                                </ItemsPanelTemplate>
-                                            </ListView.ItemsPanel>
-                                            <ListView.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition />
-                                                            <ColumnDefinition />
-                                                        </Grid.ColumnDefinitions>
-                                                        <TextBlock Text="#" Grid.Column="0" Foreground="#FFAFAFAF" />
-                                                        <TextBlock Text="{Binding}" Grid.Column="1" Foreground="#FF5F5F5F" />
-                                                    </Grid>
-                                                </DataTemplate>
-                                            </ListView.ItemTemplate>
-                                            <ListView.Resources>
-                                                <Style TargetType="ListView">
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate>
-                                                                <ItemsPresenter></ItemsPresenter>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                </Style>
-                                                <Style TargetType="ListViewItem">
-                                                    <Setter Property="Background" Value="Transparent" />
-                                                    <Setter Property="Margin" Value="0,0,10,0" />
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                                                <ContentPresenter IsHitTestVisible="False" />
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                </Style>
-                                            </ListView.Resources>
-                                        </ListView>
-                                    </Grid>
+                                                <ListView.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <WrapPanel Orientation="Horizontal" />
+                                                    </ItemsPanelTemplate>
+                                                </ListView.ItemsPanel>
+                                                <ListView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition />
+                                                                <ColumnDefinition />
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="#" Grid.Column="0" Foreground="#AFAFAF" />
+                                                            <TextBlock Text="{Binding Name}" Grid.Column="1" Foreground="#5F5F5F" />
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ListView.ItemTemplate>
+                                                <ListView.Resources>
+                                                    <Style TargetType="ListView">
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate>
+                                                                    <ItemsPresenter></ItemsPresenter>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                    <Style TargetType="ListViewItem">
+                                                        <Setter Property="Background" Value="Transparent" />
+                                                        <Setter Property="Margin" Value="0,0,10,0" />
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                                    <ContentPresenter IsHitTestVisible="False" />
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </ListView.Resources>
+                                            </ListView>
+                                        </Grid>
 
-                                    <ToggleButton 
+                                        <ToggleButton 
                                         Grid.Column="2"
                                         Grid.RowSpan="2"
                                         Style="{StaticResource FavoriteButtonStyle}"
@@ -213,26 +214,27 @@
                                         VerticalAlignment="Center"
                                         IsChecked="{Binding IsFavorite}" />
 
-                                    <Grid.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem x:Name="CopyToClipboard" Header="Copy to clipboard" Click="Search_MenuItem_CopyToClipboard_Click">
-                                                <MenuItem.Icon>
-                                                    <TextBlock Text="&#xE8C8;" Style="{StaticResource IconStyle}" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" />
-                                                </MenuItem.Icon>
-                                            </MenuItem>
-                                            <MenuItem x:Name="MarkAsFavorite" Header="Mark as favorite" Click="Search_MenuItem_MarkAsFavorite_Click">
-                                                <MenuItem.Icon>
-                                                    <TextBlock Text="&#xE734;" Style="{StaticResource IconStyle}" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" />
-                                                </MenuItem.Icon>
-                                            </MenuItem>
-                                            <MenuItem x:Name="EditTags" Header="Edit tags" Click="Search_MenuItem_EditTags_Click">
-                                                <MenuItem.Icon>
-                                                    <TextBlock Text="&#xE8EC;" Style="{StaticResource IconStyle}" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" />
-                                                </MenuItem.Icon>
-                                            </MenuItem>
-                                        </ContextMenu>
-                                    </Grid.ContextMenu>
-                                </Grid>
+                                        <Grid.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem x:Name="CopyToClipboard" Header="Copy to clipboard" Click="Search_MenuItem_CopyToClipboard_Click">
+                                                    <MenuItem.Icon>
+                                                        <TextBlock Text="&#xE8C8;" Style="{StaticResource IconStyle}" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                                <MenuItem x:Name="MarkAsFavorite" Header="Mark as favorite" Click="Search_MenuItem_MarkAsFavorite_Click">
+                                                    <MenuItem.Icon>
+                                                        <TextBlock Text="&#xE734;" Style="{StaticResource IconStyle}" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                                <MenuItem x:Name="EditTags" Header="Edit tags" Click="Search_MenuItem_EditTags_Click">
+                                                    <MenuItem.Icon>
+                                                        <TextBlock Text="&#xE8EC;" Style="{StaticResource IconStyle}" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                            </ContextMenu>
+                                        </Grid.ContextMenu>
+                                    </Grid>
+                                </ContentControl>
                             </DataTemplate>
                         </ListView.ItemTemplate>
 
@@ -341,7 +343,7 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Style="{StaticResource TabHeaderNormalStyle}">
+            <TabItem x:Name="TagsTab" Style="{StaticResource TabHeaderNormalStyle}">
                 <TabItem.Header>
                     <StackPanel Style="{StaticResource TabHeaderStackPanelStyle}">
                         <TextBlock Text="&#xE8EC;" Style="{StaticResource TabHeaderIconStyle}" />
@@ -374,7 +376,16 @@
                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding}" />
+                                <ContentControl MouseDoubleClick="TagsResult_MouseDoubleClick">
+                                    <Grid Margin="10">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Text="{Binding Name}" FontSize="16" Margin="0,0,0,5" Grid.Row="0" />
+                                        <TextBlock Text="{Binding Description}" Foreground="#5F5F5F" Grid.Row="1" />
+                                    </Grid>
+                                </ContentControl>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                         <ListView.Resources>
@@ -482,7 +493,7 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Style="{StaticResource TabHeaderNormalStyle}">
+            <TabItem x:Name="FavoritesTab" Style="{StaticResource TabHeaderNormalStyle}">
                 <TabItem.Header>
                     <StackPanel Style="{StaticResource TabHeaderStackPanelStyle}">
                         <TextBlock Text="&#xE734;" Style="{StaticResource TabHeaderIconStyle}" />
@@ -520,29 +531,31 @@
                         </ListView.ItemsPanel>
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <Grid Name="FavoritesResult">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition SharedSizeGroup="FavoritesResultRowSize1" />
-                                        <RowDefinition SharedSizeGroup="FavoritesResultRowSize2" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition SharedSizeGroup="FavoritesResultColumnSize" />
-                                    </Grid.ColumnDefinitions>
+                                <ContentControl MouseDoubleClick="FavoritesResult_MouseDoubleClick">
+                                    <Grid Name="FavoritesResult">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition SharedSizeGroup="FavoritesResultRowSize1" />
+                                            <RowDefinition SharedSizeGroup="FavoritesResultRowSize2" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition SharedSizeGroup="FavoritesResultColumnSize" />
+                                        </Grid.ColumnDefinitions>
 
-                                    <TextBlock Text="{Binding Value}" FontSize="36" HorizontalAlignment="Center" Padding="5">
-                                        <TextBlock.Style>
-                                            <Style TargetType="{x:Type TextBlock}">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding HasSpecialValue}" Value="true">
-                                                        <Setter Property="Foreground" Value="Blue" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
+                                        <TextBlock Text="{Binding Value}" FontSize="36" HorizontalAlignment="Center" Padding="5">
+                                            <TextBlock.Style>
+                                                <Style TargetType="{x:Type TextBlock}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding HasSpecialValue}" Value="true">
+                                                            <Setter Property="Foreground" Value="Blue" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
 
-                                    <TextBlock Text="{Binding Codepoint}" Grid.Row="1" FontSize="12" HorizontalAlignment="Center" Padding="5" Foreground="#666666" />
-                                </Grid>
+                                        <TextBlock Text="{Binding Codepoint}" Grid.Row="1" FontSize="12" HorizontalAlignment="Center" Padding="5" Foreground="#666666" />
+                                    </Grid>
+                                </ContentControl>
                             </DataTemplate>
                         </ListView.ItemTemplate>
 

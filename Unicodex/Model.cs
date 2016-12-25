@@ -15,6 +15,21 @@ namespace Unicodex.Model
         public abstract string[] Split { get; }
     }
 
+    public abstract class ModelObject<ViewT> : SplitString where ViewT : Unicodex.View.ViewObject
+    {
+        public abstract ViewT ToView();
+
+        public static List<ViewT> ToView(IEnumerable<ModelObject<ViewT>> modelList)
+        {
+            List<ViewT> viewList = new List<ViewT>();
+            foreach (ModelObject<ViewT> model in modelList)
+            {
+                viewList.Add(model.ToView());
+            }
+            return viewList;
+        }
+    }
+
     public class UnicodeDataEntry
     {
         public string Codepoint { get; private set; }
@@ -54,7 +69,7 @@ namespace Unicodex.Model
         }
     }
 
-    public class Character : SplitString
+    public class Character : ModelObject<View.Character>
     {
         public string Value { get; private set; }
         public int Codepoint { get; private set; }
@@ -85,19 +100,31 @@ namespace Unicodex.Model
 
             Category = entry.GeneralCategory;
         }
+
+        public override View.Character ToView()
+        {
+            return new View.Character(this);
+        }
     }
 
-    public class Tag : SplitString
+    public class Tag : ModelObject<View.Tag>
     {
         public string TagName { get; private set; }
-
-        public Tag(string tagName)
-        {
-            TagName = tagName;
-        }
+        public TagGroup TagGroup { get; private set; }
 
         public override string Unsplit { get { return TagName; } }
         public override string[] Split { get { return TagName.Split(); } }
+
+        public Tag(string tagName, TagGroup tagGroup)
+        {
+            TagName = tagName;
+            TagGroup = tagGroup;
+        }
+
+        public override View.Tag ToView()
+        {
+            return new View.Tag(this);
+        }
     }
 
     public class Query : SplitString
@@ -189,11 +216,11 @@ namespace Unicodex.Model
                         if (c.CodepointHex == queryFragment) continue;
 
                         // Check the tags:
-                        List<string> tags = ((App)Application.Current).TagGroups.GetTags(c.CodepointHex);
+                        List<Tag> tags = ((App)Application.Current).TagGroups.GetTags(c.CodepointHex);
                         bool foundMatchingTag = false;
-                        foreach (string tag in tags)
+                        foreach (Tag tag in tags)
                         {
-                            if (tag.ToUpper() == queryFragment.TrimStart('#'))
+                            if (tag.TagName.ToUpper() == queryFragment.TrimStart('#'))
                             {
                                 foundMatchingTag = true;
                                 break;

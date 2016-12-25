@@ -163,10 +163,10 @@ namespace Unicodex
         public override IEnumerable<string> GetKeys(SplitString s)
         {
             Character c = (Character)s;
-            List<string> tags = tagGroups.GetTags(c.CodepointHex);
-            foreach (string tag in tags)
+            List<Tag> tags = tagGroups.GetTags(c.CodepointHex);
+            foreach (Tag tag in tags)
             {
-                yield return tag.ToUpper();
+                yield return tag.TagName.ToUpper();
             }
         }
 

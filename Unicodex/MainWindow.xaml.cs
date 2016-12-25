@@ -17,7 +17,7 @@ namespace Unicodex
     {
         private FilterController<Model.Character, View.Character> search;
         private FilterController<Model.Character, View.Character> favorites;
-        private FilterController<Model.Tag, string> tags;
+        private FilterController<Model.Tag, View.Tag> tags;
 
         private System.Windows.Forms.NotifyIcon notifyIcon;
 
@@ -321,6 +321,27 @@ namespace Unicodex
         private void TagsTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             tags.PreviewKeyDown(e);
+        }
+
+        private void SearchResult_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ContentControl content = (ContentControl)sender;
+            View.Character character = (View.Character)content.DataContext;
+            search.HandleChooseEvent(character);
+        }
+
+        private void TagsResult_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ContentControl content = (ContentControl)sender;
+            View.Tag tag = (View.Tag)content.DataContext;
+            tags.HandleChooseEvent(tag);
+        }
+
+        private void FavoritesResult_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ContentControl content = (ContentControl)sender;
+            View.Character character = (View.Character)content.DataContext;
+            favorites.HandleChooseEvent(character);
         }
 
         private void navButton_Click(object sender, RoutedEventArgs e)

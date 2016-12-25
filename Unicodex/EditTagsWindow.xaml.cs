@@ -26,7 +26,7 @@ namespace Unicodex
         {
             InitializeComponent();
 
-            IEnumerable<string> currentTags = Settings.Default.UserTags.GetTags(c.Model.CodepointHex);
+            IEnumerable<Model.Tag> currentTags = Settings.Default.UserTags.GetTags(c.ModelObject.CodepointHex);
             string header = $"Editing tags for {c.Name}. Enter one tag per line.\nSome tags are built-in; these can be turned off in your Preferences.";
             string tagData = string.Join(Environment.NewLine, currentTags);
             this.DataContext = new EditTagsData(c, header, tagData);
@@ -47,12 +47,12 @@ namespace Unicodex
 
                 /* Make a copy of the old tags since we will be iteratively
                  * removing them, thus changing the list it returns. */
-                List<string> oldTags = new List<string>(Settings.Default.UserTags.GetTags(c.Model.CodepointHex));
+                List<View.Tag> oldTags = Model.Tag.ToView(Settings.Default.UserTags.GetTags(c.ModelObject.CodepointHex));
                 string[] newTags = tagData.Split(new[] { '\r', '\n'}, StringSplitOptions.RemoveEmptyEntries);
                 
-                foreach (string oldTag in oldTags)
+                foreach (Tag oldTag in oldTags)
                 {
-                    Settings.Default.UserTags.RemoveTag(c.Model.CodepointHex, oldTag);
+                    Settings.Default.UserTags.RemoveTag(c.ModelObject.CodepointHex, oldTag.Name);
                 }
                 foreach (string newTag in newTags)
                 {
@@ -61,7 +61,7 @@ namespace Unicodex
                         .Replace("\"", "")
                         .Replace("\r", "")
                         .Replace("\n", "");
-                    Settings.Default.UserTags.AddTag(c.Model.CodepointHex, sanitizedTag);
+                    Settings.Default.UserTags.AddTag(c.ModelObject.CodepointHex, sanitizedTag);
                 }
 
                 Settings.Default.Save();

@@ -47,9 +47,9 @@ namespace Unicodex.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::Unicodex.Tags UserTags {
+        public global::Unicodex.UserTags UserTags {
             get {
-                return ((global::Unicodex.Tags)(this["UserTags"]));
+                return ((global::Unicodex.UserTags)(this["UserTags"]));
             }
             set {
                 this["UserTags"] = value;

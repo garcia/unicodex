@@ -141,13 +141,9 @@ namespace Unicodex
     }
 
     [Serializable]
-    public class Tags
+    public class UserTags : TagGroup
     {
-        [XmlIgnore]
-        public Dictionary<string, List<string>> TagToCodepoints { get; private set; }
-
-        [XmlIgnore]
-        public Dictionary<string, List<string>> CodepointToTags { get; private set; }
+        public override string Source { get { return "User-defined"; } }
 
         public TagPair[] TagPairs
         {
@@ -170,81 +166,6 @@ namespace Unicodex
                     AddTag(pair.Codepoint, pair.Tag);
                 }
             }
-        }
-
-        public Tags()
-        {
-            TagToCodepoints = new Dictionary<string, List<string>>();
-            CodepointToTags = new Dictionary<string, List<string>>();
-        }
-
-        public IEnumerable<string> GetTags(string codepoint)
-        {
-            if (CodepointToTags.ContainsKey(codepoint))
-            {
-                return CodepointToTags[codepoint];
-            }
-            else
-            {
-                return Enumerable.Empty<string>();
-            }
-            
-        }
-
-        public IEnumerable<string> GetCodepoints(string tag)
-        {
-            if (TagToCodepoints.ContainsKey(tag))
-            {
-                return TagToCodepoints[tag];
-            }
-            else
-            {
-                return Enumerable.Empty<string>();
-            }
-        }
-
-        public void AddTag(string codepoint, string tag)
-        {
-            /* Make sure this tag doesn't already exist. Why not use a set?
-             * Because the user might care about the order of their tags. */
-            if (CodepointToTags.ContainsKey(codepoint))
-            {
-                string upperTag = tag.ToUpper();
-                foreach (string existingTag in CodepointToTags[codepoint])
-                {
-                    if (upperTag == existingTag.ToUpper()) return;
-                }
-            }
-
-            if (!TagToCodepoints.ContainsKey(tag))
-            {
-                TagToCodepoints[tag] = new List<string>();
-            }
-            TagToCodepoints[tag].Add(codepoint);
-
-            if (!CodepointToTags.ContainsKey(codepoint))
-            {
-                CodepointToTags[codepoint] = new List<string>();
-            }
-            CodepointToTags[codepoint].Add(tag);
-        }
-
-        public void RemoveTag(string codepoint, string tag)
-        {
-            if (TagToCodepoints.ContainsKey(tag))
-            {
-                TagToCodepoints[tag].Remove(codepoint);
-            }
-
-            if (CodepointToTags.ContainsKey(codepoint))
-            {
-                CodepointToTags[codepoint].Remove(tag);
-            }
-        }
-
-        public virtual bool IsEnabled()
-        {
-            return true;
         }
     }
 

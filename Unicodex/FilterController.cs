@@ -12,7 +12,9 @@ using Unicodex.View;
 
 namespace Unicodex.Controller
 {
-    public abstract class FilterController<ModelT, ViewT> where ModelT : SplitString
+    public abstract class FilterController<ModelT, ViewT>
+        where ModelT : ModelObject<ViewT>
+        where ViewT : ViewObject
     {
         protected MainWindow window;
         protected ListView results;
@@ -32,13 +34,11 @@ namespace Unicodex.Controller
             ObservableCollection<ViewT> view = new ObservableCollection<ViewT>();
             foreach (ModelT model in Filter.Search(new Query(input.Text)))
             {
-                view.Add(ModelToView(model));
+                view.Add(model.ToView());
             }
             results.ItemsSource = view;
             UpdateSelectedResult(0);
         }
-
-        internal abstract ViewT ModelToView(ModelT model);
 
         public void UpdateSelectedResult(int selected)
         {
@@ -69,7 +69,7 @@ namespace Unicodex.Controller
                     // Use Enter to send the selected character
                     else if (e.Key == Key.Enter)
                     {
-                        HandleEnterEvent(items[results.SelectedIndex]);
+                        HandleChooseEvent(items[results.SelectedIndex]);
                     }
                     else if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.C)
                     {
@@ -84,7 +84,7 @@ namespace Unicodex.Controller
 
         public abstract void HandleCopyEvent(ViewT viewT);
 
-        public abstract void HandleEnterEvent(ViewT viewT);
+        public abstract void HandleChooseEvent(ViewT viewT);
 
         public bool IsActive()
         {
@@ -117,7 +117,7 @@ namespace Unicodex.Controller
 
         internal static void SendCharacter(Window window, View.Character c)
         {
-            string value = c.Model.Value;
+            string value = c.ModelObject.Value;
 
             // Build key data for SendInput
             // FIXME: astral plane characters break in Notepad++
@@ -152,7 +152,7 @@ namespace Unicodex.Controller
 
         internal static void CopyToClipboard(Window window, View.Character character)
         {
-            Clipboard.SetText(character.Model.Value);
+            Clipboard.SetText(character.ModelObject.Value);
             window.Hide();
         }
 
@@ -161,14 +161,9 @@ namespace Unicodex.Controller
             CopyToClipboard(window, c);
         }
 
-        public override void HandleEnterEvent(View.Character c)
+        public override void HandleChooseEvent(View.Character c)
         {
             SendCharacter(window, c);
-        }
-
-        internal override View.Character ModelToView(Model.Character model)
-        {
-            return new View.Character(model);
         }
     }
 
@@ -185,7 +180,7 @@ namespace Unicodex.Controller
             SearchController.CopyToClipboard(window, c);
         }
 
-        public override void HandleEnterEvent(View.Character c)
+        public override void HandleChooseEvent(View.Character c)
         {
             SearchController.SendCharacter(window, c);
         }
@@ -215,14 +210,9 @@ namespace Unicodex.Controller
              * empty until the user types something. */
             UpdateResults();
         }
-
-        internal override View.Character ModelToView(Model.Character model)
-        {
-            return new View.Character(model);
-        }
     }
 
-    public class TagsController : FilterController<Tag, string>
+    public class TagsController : FilterController<Model.Tag, View.Tag>
     {
         public TagsController(MainWindow window) : base(window, window.TagsResults, window.TagsTextBox)
         {
@@ -231,33 +221,41 @@ namespace Unicodex.Controller
 
         private void Initialize()
         {
-            Filter = new Filter<Tag>(new Cache<Tag>[] {
-                new AllWordsCache<Tag>(),
-                new FirstLetterOfAllWordsCache<Tag>(),
+            Filter = new Filter<Model.Tag>(new Cache<Model.Tag>[] {
+                new AllWordsCache<Model.Tag>(),
+                new FirstLetterOfAllWordsCache<Model.Tag>(),
             });
             Filter.ReturnAllCharactersOnEmptyQuery = true;
 
-            foreach (string tag in ((App)Application.Current).TagGroups.GetAllTags())
+            foreach (Model.Tag tag in ((App)Application.Current).TagGroups.GetAllTags())
             {
-                Filter.Add(new Tag(tag));
+                Filter.Add(tag);
             }
 
             UpdateResults();
         }
 
-        public override void HandleCopyEvent(string viewT)
+        public override void HandleCopyEvent(View.Tag viewT)
         {
             // no-op?
         }
 
-        public override void HandleEnterEvent(string viewT)
+        public override void HandleChooseEvent(View.Tag viewT)
         {
-            // TODO: switch to Search tab, prepopulate with tag query
-        }
-
-        internal override string ModelToView(Tag model)
-        {
-            return model.Unsplit;
+            string searchText;
+            string hashtag = "#" + viewT.Name;
+            if (viewT.Name.Contains(" "))
+            {
+                searchText = "\"" + hashtag + "\" ";
+            }
+            else
+            {
+                searchText = hashtag + " ";
+            }
+            window.SearchTab.IsSelected = true;
+            window.SearchTextBox.Text = searchText;
+            window.SearchTextBox.CaretIndex = searchText.Length;
+            window.SearchTextBox.Focus();
         }
 
     }
