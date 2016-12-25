@@ -15,8 +15,9 @@ namespace Unicodex
     /// </summary>
     public partial class MainWindow : Window
     {
-        private FilterController search;
-        private FilterController favorites;
+        private FilterController<Model.Character, View.Character> search;
+        private FilterController<Model.Character, View.Character> favorites;
+        private FilterController<Model.Tag, string> tags;
 
         private System.Windows.Forms.NotifyIcon notifyIcon;
 
@@ -33,6 +34,7 @@ namespace Unicodex
             // Create filter controllers
             search = new SearchController(this);
             favorites = new FavoritesController(this);
+            tags = new TagsController(this);
 
             // Add WndProc handler
             HwndSource source = PresentationSource.FromVisual(this) as HwndSource;
@@ -99,19 +101,21 @@ namespace Unicodex
                 }
                 else if (e.Key != Key.Up && e.Key != Key.Down)
                 {
-                    FilterController activeFilter = null;
+                    // TODO: bleh. There should be a cleaner way to do this...
                     if (search.IsActive())
                     {
-                        activeFilter = search;
+                        search.FocusInput();
+                        search.PreviewKeyDown(e);
                     }
                     else if (favorites.IsActive())
                     {
-                        activeFilter = favorites;
+                        favorites.FocusInput();
+                        favorites.PreviewKeyDown(e);
                     }
-                    if (activeFilter != null)
+                    else if (tags.IsActive())
                     {
-                        activeFilter.FocusInput();
-                        activeFilter.PreviewKeyDown(e);
+                        tags.FocusInput();
+                        tags.PreviewKeyDown(e);
                     }
                 }
             }
@@ -298,6 +302,11 @@ namespace Unicodex
             favorites.UpdateResults();
         }
 
+        private void TagsTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            tags.UpdateResults();
+        }
+
         private void SearchTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             search.PreviewKeyDown(e);
@@ -306,6 +315,12 @@ namespace Unicodex
         private void FavoritesTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             favorites.PreviewKeyDown(e);
+        }
+
+
+        private void TagsTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            tags.PreviewKeyDown(e);
         }
 
         private void navButton_Click(object sender, RoutedEventArgs e)
@@ -333,7 +348,7 @@ namespace Unicodex
         {
             MenuItem menuItem = (MenuItem)sender;
             View.Character character = (View.Character)menuItem.DataContext;
-            search.CopyToClipboard(character);
+            search.HandleCopyEvent(character);
         }
 
         private void Search_MenuItem_MarkAsFavorite_Click(object sender, RoutedEventArgs e)

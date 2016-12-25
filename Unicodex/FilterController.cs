@@ -8,16 +8,17 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Unicodex.Model;
+using Unicodex.View;
 
 namespace Unicodex.Controller
 {
-    public class FilterController
+    public abstract class FilterController<ModelT, ViewT> where ModelT : SplitString
     {
         protected MainWindow window;
         protected ListView results;
         protected TextBox input;
 
-        public Filter Filter { get; protected set; }
+        public Filter<ModelT> Filter { get; protected set; }
 
         protected FilterController(MainWindow window, ListView results, TextBox input)
         {
@@ -28,13 +29,20 @@ namespace Unicodex.Controller
 
         public void UpdateResults()
         {
-            results.ItemsSource = Filter.Search(new Model.Query(input.Text));
+            ObservableCollection<ViewT> view = new ObservableCollection<ViewT>();
+            foreach (ModelT model in Filter.Search(new Query(input.Text)))
+            {
+                view.Add(ModelToView(model));
+            }
+            results.ItemsSource = view;
             UpdateSelectedResult(0);
         }
 
+        internal abstract ViewT ModelToView(ModelT model);
+
         public void UpdateSelectedResult(int selected)
         {
-            ObservableCollection<View.Character> items = (ObservableCollection<View.Character>)results.ItemsSource;
+            ObservableCollection<ViewT> items = (ObservableCollection<ViewT>)results.ItemsSource;
             if (items != null && items.Count > 0)
             {
                 results.SelectedIndex = Math.Min(Math.Max(selected, 0), items.Count - 1);
@@ -44,7 +52,7 @@ namespace Unicodex.Controller
 
         public void PreviewKeyDown(KeyEventArgs e)
         {
-            ObservableCollection<View.Character> items = (ObservableCollection<View.Character>)results.ItemsSource;
+            ObservableCollection<ViewT> items = (ObservableCollection<ViewT>)results.ItemsSource;
             if (items != null && items.Count > 0)
             {
                 if (e.IsDown)
@@ -61,20 +69,53 @@ namespace Unicodex.Controller
                     // Use Enter to send the selected character
                     else if (e.Key == Key.Enter)
                     {
-                        SendCharacter(items[results.SelectedIndex]);
+                        HandleEnterEvent(items[results.SelectedIndex]);
                     }
                     else if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.C)
                     {
                         if (input.SelectedText == string.Empty)
                         {
-                            CopyToClipboard(items[results.SelectedIndex]);
+                            HandleCopyEvent(items[results.SelectedIndex]);
                         }
                     }
                 }
             }
         }
 
-        private void SendCharacter(View.Character c)
+        public abstract void HandleCopyEvent(ViewT viewT);
+
+        public abstract void HandleEnterEvent(ViewT viewT);
+
+        public bool IsActive()
+        {
+            return input.IsVisible;
+        }
+
+        public void FocusInput()
+        {
+            input.Focus();
+        }
+    }
+
+    public class SearchController : FilterController<Model.Character, View.Character>
+    {
+        public SearchController(MainWindow window) : base(window, window.SearchResults, window.SearchTextBox)
+        {
+            Filter = new Filter<Model.Character>(new Cache<Model.Character>[] {
+                new FavoritesCache(Properties.Settings.Default.Favorites),
+                new TagsCache(((App)Application.Current).TagGroups),
+                new AllWordsCache<Model.Character>(),
+                new FirstLetterOfAllWordsCache<Model.Character>(),
+                new CodepointCache()
+            });
+
+            foreach (Model.Character c in ((App) Application.Current).Characters.AllCharacters)
+            {
+                Filter.Add(c);
+            }
+        }
+
+        internal static void SendCharacter(Window window, View.Character c)
         {
             string value = c.Model.Value;
 
@@ -109,29 +150,44 @@ namespace Unicodex.Controller
             window.Hide();
         }
 
-        public void CopyToClipboard(View.Character character)
+        internal static void CopyToClipboard(Window window, View.Character character)
         {
             Clipboard.SetText(character.Model.Value);
             window.Hide();
         }
 
-        public bool IsActive()
+        public override void HandleCopyEvent(View.Character c)
         {
-            return input.IsVisible;
+            CopyToClipboard(window, c);
         }
 
-        public void FocusInput()
+        public override void HandleEnterEvent(View.Character c)
         {
-            input.Focus();
+            SendCharacter(window, c);
+        }
+
+        internal override View.Character ModelToView(Model.Character model)
+        {
+            return new View.Character(model);
         }
     }
 
-    public class FavoritesController : FilterController
+    public class FavoritesController : FilterController<Model.Character, View.Character>
     {
         public FavoritesController(MainWindow window) : base(window, window.FavoritesResults, window.FavoritesTextBox)
         {
             Properties.Settings.Default.Favorites.CollectionChanged += Favorites_CollectionChanged;
             Initialize();
+        }
+
+        public override void HandleCopyEvent(View.Character c)
+        {
+            SearchController.CopyToClipboard(window, c);
+        }
+
+        public override void HandleEnterEvent(View.Character c)
+        {
+            SearchController.SendCharacter(window, c);
         }
 
         private void Favorites_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -141,7 +197,12 @@ namespace Unicodex.Controller
 
         private void Initialize()
         {
-            Filter = new Filter();
+            Filter = new Filter<Model.Character>(new Cache<Model.Character>[] {
+                new TagsCache(((App)Application.Current).TagGroups),
+                new AllWordsCache<Model.Character>(),
+                new FirstLetterOfAllWordsCache<Model.Character>(),
+                new CodepointCache()
+            });
             Filter.ReturnAllCharactersOnEmptyQuery = true;
 
             foreach (string codepointHex in Properties.Settings.Default.Favorites.FavoriteSet)
@@ -154,18 +215,50 @@ namespace Unicodex.Controller
              * empty until the user types something. */
             UpdateResults();
         }
+
+        internal override View.Character ModelToView(Model.Character model)
+        {
+            return new View.Character(model);
+        }
     }
 
-    public class SearchController : FilterController
+    public class TagsController : FilterController<Tag, string>
     {
-        public SearchController(MainWindow window) : base(window, window.SearchResults, window.SearchTextBox)
+        public TagsController(MainWindow window) : base(window, window.TagsResults, window.TagsTextBox)
         {
-            Filter = new Filter();
-
-            foreach (Character c in ((App) Application.Current).Characters.AllCharacters)
-            {
-                Filter.Add(c);
-            }
+            Initialize();
         }
+
+        private void Initialize()
+        {
+            Filter = new Filter<Tag>(new Cache<Tag>[] {
+                new AllWordsCache<Tag>(),
+                new FirstLetterOfAllWordsCache<Tag>(),
+            });
+            Filter.ReturnAllCharactersOnEmptyQuery = true;
+
+            foreach (string tag in ((App)Application.Current).TagGroups.GetAllTags())
+            {
+                Filter.Add(new Tag(tag));
+            }
+
+            UpdateResults();
+        }
+
+        public override void HandleCopyEvent(string viewT)
+        {
+            // no-op?
+        }
+
+        public override void HandleEnterEvent(string viewT)
+        {
+            // TODO: switch to Search tab, prepopulate with tag query
+        }
+
+        internal override string ModelToView(Tag model)
+        {
+            return model.Unsplit;
+        }
+
     }
 }

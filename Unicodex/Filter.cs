@@ -7,27 +7,21 @@ using Unicodex.Properties;
 
 namespace Unicodex
 {
-    public class Filter
+    public class Filter<ModelT> where ModelT : SplitString
     {
-        private List<Character> allCharacters = new List<Character>();
+        private List<ModelT> allItems = new List<ModelT>();
+        private Cache<ModelT>[] Caches;
 
-        private Cache[] Caches = new Cache[]
+        public Filter(Cache<ModelT>[] caches)
         {
-            new FavoritesCache(Properties.Settings.Default.Favorites),
-            new TagsCache(((App)Application.Current).TagGroups),
-            //new NameCache(),
-            //new FirstWordCache(),
-            new AllWordsCache(),
-            //new FirstLetterOfFirstWordCache(),
-            new FirstLetterOfAllWordsCache(),
-            new CodepointCache(),
-        };
+            Caches = caches;
+        }
 
         public bool ReturnAllCharactersOnEmptyQuery { get; set; } = false;
 
-        public Character GetByCodepoint(string codepoint)
+        public ModelT GetByCodepoint(string codepoint)
         {
-            foreach (Cache cache in Caches)
+            foreach (Cache<ModelT> cache in Caches)
             {
                 if (cache is CodepointCache)
                 {
@@ -37,37 +31,34 @@ namespace Unicodex
             return null;
         }
 
-        public void Add(Character c)
+        public void Add(ModelT m)
         {
-            allCharacters.Add(c);
+            allItems.Add(m);
 
-            foreach (Cache cache in Caches)
+            foreach (Cache<ModelT> cache in Caches)
             {
-                cache.Add(c);
+                cache.Add(m);
             }
         }
 
-        public ObservableCollection<View.Character> Search(Query query)
+        public IEnumerable<ModelT> Search(Query query)
         {
-            HashSet<Character> seenCharacters = new HashSet<Character>();
-            ObservableCollection<View.Character> results = new ObservableCollection<View.Character>();
+            HashSet<ModelT> seenItems = new HashSet<ModelT>();
+            List<ModelT> results = new List<ModelT>();
 
             // Handle empty query
             if (query.QueryText.Length == 0)
             {
                 if (ReturnAllCharactersOnEmptyQuery)
                 {
-                    foreach (Character c in allCharacters)
-                    {
-                        results.Add(new View.Character(c));
-                    }
+                    results.AddRange(allItems);
                 }
                 return results;
             }
 
             // Create aggregated query of all of the caches
-            IEnumerable<Character> aggregatedQuery = null;
-            foreach (Cache cache in Caches)
+            IEnumerable<ModelT> aggregatedQuery = null;
+            foreach (Cache<ModelT> cache in Caches)
             {
                 if (aggregatedQuery == null)
                 {
@@ -79,12 +70,12 @@ namespace Unicodex
                 }
             }
 
-            foreach (Character cacheHit in aggregatedQuery)
+            foreach (ModelT cacheHit in aggregatedQuery)
             {
-                if (!seenCharacters.Contains(cacheHit))
+                if (!seenItems.Contains(cacheHit))
                 {
-                    results.Add(new View.Character(cacheHit));
-                    seenCharacters.Add(cacheHit);
+                    results.Add(cacheHit);
+                    seenItems.Add(cacheHit);
                     if (results.Count >= Settings.Default.Preferences.maxSearchResults) break;
                 }
             }

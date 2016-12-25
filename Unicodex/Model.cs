@@ -87,6 +87,19 @@ namespace Unicodex.Model
         }
     }
 
+    public class Tag : SplitString
+    {
+        public string TagName { get; private set; }
+
+        public Tag(string tagName)
+        {
+            TagName = tagName;
+        }
+
+        public override string Unsplit { get { return TagName; } }
+        public override string[] Split { get { return TagName.Split(); } }
+    }
+
     public class Query : SplitString
     {
         public string QueryText { get; private set; }
@@ -153,14 +166,14 @@ namespace Unicodex.Model
             }
         }
 
-        public bool Matches(Character c)
+        public bool Matches(SplitString s)
         {
             foreach (string queryFragment in QueryFragments)
             {
                 bool matchesQueryFragment = false;
-                foreach (string nameWord in c.NameWords)
+                foreach (string nameWord in s.Split)
                 {
-                    if (nameWord.StartsWith(queryFragment))
+                    if (nameWord.StartsWith(queryFragment, StringComparison.OrdinalIgnoreCase))
                     {
                         matchesQueryFragment = true;
                         break;
@@ -168,22 +181,26 @@ namespace Unicodex.Model
                 }
                 if (!matchesQueryFragment)
                 {
-                    // This query fragment doesn't match the character name.
-                    // Check the codepoint:
-                    if (c.CodepointHex == queryFragment) continue;
-
-                    // Check the tags:
-                    List<string> tags = ((App)Application.Current).TagGroups.GetTags(c.CodepointHex);
-                    bool foundMatchingTag = false;
-                    foreach (string tag in tags)
+                    Character c = s as Character;
+                    if (c != null)
                     {
-                        if (tag.ToUpper() == queryFragment.TrimStart('#'))
+                        // This query fragment doesn't match the character name.
+                        // Check the codepoint:
+                        if (c.CodepointHex == queryFragment) continue;
+
+                        // Check the tags:
+                        List<string> tags = ((App)Application.Current).TagGroups.GetTags(c.CodepointHex);
+                        bool foundMatchingTag = false;
+                        foreach (string tag in tags)
                         {
-                            foundMatchingTag = true;
-                            break;
+                            if (tag.ToUpper() == queryFragment.TrimStart('#'))
+                            {
+                                foundMatchingTag = true;
+                                break;
+                            }
                         }
+                        if (foundMatchingTag) continue;
                     }
-                    if (foundMatchingTag) continue;
 
                     // No matches found - cache miss.
                     return false;

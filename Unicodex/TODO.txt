@@ -1,18 +1,22 @@
-﻿- blocks tab
-- make the star button actually work
-	- ability to remove favorites
-- settings window
-	- toggle text caret positioning
-	- choose cursor or window fallback positioning
-	- choose window edge + inside/outside placement
-	- toggle autostart
-	- choose global hotkey
+﻿- tags tab
+- tweak favorites tab
+- investigate performance issues for long non-matching queries
+- investigate window not being raised to front in some cases (usually [always?] involves the Visual Studio window)
+- investigate window not closing after losing focus (same conditions as above)
+- partial tag matches
+- quoted string name matches
+- import emoji / alias data
+- organize source files
 - about window
+- app icon
 - package for distribution / installation
+	- launch on startup option
+	- launch after installing option
+	- start menu entry?
 
 === 1.0 ===
 
-- aliases
+- more aliases
 - CJK
 - fileformat.info & related context menu options
 - ability to hide characters

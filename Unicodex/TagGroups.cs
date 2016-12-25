@@ -96,6 +96,21 @@ namespace Unicodex
             return results;
         }
 
+        internal IEnumerable<string> GetAllTags()
+        {
+            List<string> results = new List<string>();
+
+            // Reverse tag groups as lazy fix to show user tags first on the Tags tab
+            foreach (Tags tagGroup in AllTags.Reverse())
+            {
+                if (tagGroup.IsEnabled())
+                {
+                    results.AddRange(tagGroup.TagToCodepoints.Keys);
+                }
+            }
+
+            return results;
+        }
     }
 
     public class BlockTags : Tags

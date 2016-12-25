@@ -4,36 +4,37 @@ using Unicodex.Model;
 
 namespace Unicodex
 {
-    abstract class Cache
+    public abstract class Cache<T> where T : SplitString
     {
-        public Dictionary<string, List<Character>> Items { get; private set; }
+        public Dictionary<string, List<T>> Items { get; private set; }
 
         public Cache()
         {
-            Items = new Dictionary<string, List<Character>>();
+            Items = new Dictionary<string, List<T>>();
         }
 
-        public virtual void Add(Character c)
+        public virtual void Add(T t)
         {
-            foreach (string key in GetKeys(c))
+            foreach (string key in GetKeys(t))
             {
-                if (!Items.ContainsKey(key))
+                string upperKey = key.ToUpper();
+                if (!Items.ContainsKey(upperKey))
                 {
-                    Items[key] = new List<Character>();
+                    Items[upperKey] = new List<T>();
                 }
-                List<Character> cacheEntry = Items[key];
-                cacheEntry.Add(c);
+                List<T> cacheEntry = Items[upperKey];
+                cacheEntry.Add(t);
             }
         }
 
-        public IEnumerable<Character> Search(Query query)
+        public IEnumerable<T> Search(Query query)
         {
             foreach (string queryKey in GetQueryKeys(query))
             {
                 if (Items.ContainsKey(queryKey))
                 {
-                    List<Character> cacheHits = Items[queryKey];
-                    foreach (Character cacheHit in cacheHits)
+                    List<T> cacheHits = Items[queryKey];
+                    foreach (T cacheHit in cacheHits)
                     {
                         if (Matches(query, cacheHit)) yield return cacheHit;
                     }
@@ -48,13 +49,13 @@ namespace Unicodex
             return GetKeys(s);
         }
 
-        public virtual bool Matches(Query query, Character cacheHit)
+        public virtual bool Matches(Query query, T cacheHit)
         {
             return query.Matches(cacheHit);
         }
     }
 
-    class NameCache : Cache
+    class NameCache<T> : Cache<T> where T : SplitString
     {
         public override IEnumerable<string> GetKeys(SplitString s)
         {
@@ -62,7 +63,7 @@ namespace Unicodex
         }
     }
 
-    class FirstWordCache : Cache
+    class FirstWordCache<T> : Cache<T> where T : SplitString
     {
         public override IEnumerable<string> GetKeys(SplitString s)
         {
@@ -70,7 +71,7 @@ namespace Unicodex
         }
     }
 
-    class AllWordsCache : Cache
+    class AllWordsCache<T> : Cache<T> where T : SplitString
     {
         public override IEnumerable<string> GetKeys(SplitString s)
         {
@@ -81,20 +82,20 @@ namespace Unicodex
         }
     }
 
-    class FirstLetterOfFirstWordCache : Cache
+    class FirstLetterOfFirstWordCache<T> : Cache<T> where T : SplitString
     {
         public override IEnumerable<string> GetKeys(SplitString s)
         {
             yield return s.Unsplit[0].ToString();
         }
 
-        public override bool Matches(Query query, Character cacheHit)
+        public override bool Matches(Query query, T cacheHit)
         {
-            return cacheHit.NameWords[0].StartsWith(query.QueryFragments[0]) && base.Matches(query, cacheHit);
+            return cacheHit.Split[0].StartsWith(query.QueryFragments[0]) && base.Matches(query, cacheHit);
         }
     }
 
-    class FirstLetterOfAllWordsCache : Cache
+    class FirstLetterOfAllWordsCache<T> : Cache<T> where T : SplitString
     {
         public override IEnumerable<string> GetKeys(SplitString s)
         {
@@ -105,7 +106,7 @@ namespace Unicodex
         }
     }
 
-    class CodepointCache : Cache
+    class CodepointCache : Cache<Character>
     {
         public override IEnumerable<string> GetKeys(SplitString s)
         {
@@ -124,7 +125,7 @@ namespace Unicodex
         }
     }
 
-    class FavoritesCache : Cache
+    class FavoritesCache : Cache<Character>
     {
         private Favorites favorites;
 
@@ -150,7 +151,7 @@ namespace Unicodex
         }
     }
 
-    class TagsCache : Cache
+    class TagsCache : Cache<Character>
     {
         private TagGroups tagGroups;
 
