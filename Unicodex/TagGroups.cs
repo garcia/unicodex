@@ -119,7 +119,7 @@ namespace Unicodex
             }
             UserTags = Settings.Default.UserTags;
 
-            BlockTags = new BlockTags();
+            BlockTags = new BlockTags(characters);
             CategoryTags = new CategoryTags(characters);
             EmojiTags = new EmojiTags();
             AliasTags = new AliasTags();
@@ -178,7 +178,7 @@ namespace Unicodex
     {
         public override string Source { get { return "Block"; } }
 
-        public BlockTags() : base()
+        public BlockTags(Characters characters) : base()
         {
             using (StringReader blockDataLines = new StringReader(Properties.Resources.Blocks))
             {
@@ -197,7 +197,11 @@ namespace Unicodex
 
                     foreach (int codepoint in Enumerable.Range(start, end - start + 1))
                     {
-                        AddTag(codepoint.ToString("X4"), blockName);
+                        string codepointHex = codepoint.ToString("X4");
+                        if (characters.AllCharactersByCodepointHex.ContainsKey(codepointHex))
+                        {
+                            AddTag(codepointHex, blockName);
+                        }
                     }
                 }
             }

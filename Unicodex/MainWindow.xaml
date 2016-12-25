@@ -20,13 +20,22 @@
     </shell:WindowChrome.WindowChrome>
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="Bool2VisibilityConverter" />
+        
+        <SolidColorBrush x:Key="PrimaryForeground" Color="Black" />
+        <SolidColorBrush x:Key="SecondaryForeground" Color="#5F5F5F" />
+        <SolidColorBrush x:Key="TertiaryForeground" Color="#AFAFAF" />
+        <SolidColorBrush x:Key="AlternatingBackground1" Color="#F0F0F0" />
+        <SolidColorBrush x:Key="AlternatingBackground2" Color="#F8F8F8" />
+        <SolidColorBrush x:Key="AlternatingBackgroundHover" Color="#E8E8E8" />
+        <SolidColorBrush x:Key="AlternatingBackgroundSelected" Color="#E0E0E0" />
+        
         <Style TargetType="{x:Type TabItem}" x:Key="TabHeaderNormalStyle">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type TabItem}">
                         <!-- Compensate for 2-pixel left padding in the TabPanel -->
                         <Grid Margin="-2,-2,0,0">
-                            <Border Name="Border" Margin="0" Background="#f8f8f8" shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                            <Border Name="Border" Margin="0" Background="{StaticResource AlternatingBackground2}" shell:WindowChrome.IsHitTestVisibleInChrome="True">
                                 <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center"
                                     HorizontalAlignment="Center"
                                     ContentSource="Header" Margin="12,2,12,2"
@@ -149,7 +158,7 @@
                                             </TextBlock.Style>
                                         </TextBlock>
 
-                                        <TextBlock Text="{Binding Codepoint}" Grid.Row="1" FontSize="12" HorizontalAlignment="Center" Padding="5" Foreground="#666666" />
+                                        <TextBlock Text="{Binding Codepoint}" Grid.Row="1" FontSize="12" HorizontalAlignment="Center" Padding="5" Foreground="{StaticResource SecondaryForeground}" />
 
                                         <Grid Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Center">
                                             <Grid.RowDefinitions>
@@ -175,8 +184,8 @@
                                                                 <ColumnDefinition />
                                                                 <ColumnDefinition />
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBlock Text="#" Grid.Column="0" Foreground="#AFAFAF" />
-                                                            <TextBlock Text="{Binding Name}" Grid.Column="1" Foreground="#5F5F5F" />
+                                                            <TextBlock Text="#" Grid.Column="0" Foreground="{StaticResource TertiaryForeground}" />
+                                                            <TextBlock Text="{Binding Name}" Grid.Column="1" Foreground="{StaticResource SecondaryForeground}" />
                                                         </Grid>
                                                     </DataTemplate>
                                                 </ListView.ItemTemplate>
@@ -243,8 +252,15 @@
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type ListBox}">
-                                            <Border BorderThickness="{TemplateBinding Border.BorderThickness}" Padding="0" BorderBrush="{TemplateBinding Border.BorderBrush}" Background="{TemplateBinding Panel.Background}" Name="Bd" SnapsToDevicePixels="True">
-                                                <ScrollViewer Padding="{TemplateBinding Control.Padding}" Focusable="False" HorizontalScrollBarVisibility="Disabled">
+                                            <Border Name="Bd"
+                                                    Padding="0"
+                                                    BorderThickness="{TemplateBinding Border.BorderThickness}"
+                                                    BorderBrush="{TemplateBinding Border.BorderBrush}"
+                                                    Background="{TemplateBinding Panel.Background}"
+                                                    SnapsToDevicePixels="True">
+                                                <ScrollViewer Padding="{TemplateBinding Control.Padding}"
+                                                              Focusable="False"
+                                                              HorizontalScrollBarVisibility="Disabled">
                                                     <ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
                                                 </ScrollViewer>
                                             </Border>
@@ -281,10 +297,9 @@
                                                             <Condition.Value>True</Condition.Value>
                                                         </Condition>
                                                     </MultiTrigger.Conditions>
-                                                    <Setter Property="Panel.Background" TargetName="Bd">
-                                                        <Setter.Value>
-                                                            <SolidColorBrush>#e8e8e8</SolidColorBrush>
-                                                        </Setter.Value>
+                                                    <Setter Property="Panel.Background"
+                                                            TargetName="Bd"
+                                                            Value="{StaticResource AlternatingBackgroundHover}">
                                                     </Setter>
                                                 </MultiTrigger>
                                                 <MultiTrigger>
@@ -296,10 +311,9 @@
                                                             <Condition.Value>True</Condition.Value>
                                                         </Condition>
                                                     </MultiTrigger.Conditions>
-                                                    <Setter Property="Panel.Background" TargetName="Bd">
-                                                        <Setter.Value>
-                                                            <SolidColorBrush>#e0e0e0</SolidColorBrush>
-                                                        </Setter.Value>
+                                                    <Setter Property="Panel.Background"
+                                                            TargetName="Bd"
+                                                            Value="{StaticResource AlternatingBackgroundSelected}">
                                                     </Setter>
                                                 </MultiTrigger>
                                                 <MultiTrigger>
@@ -311,10 +325,9 @@
                                                             <Condition.Value>True</Condition.Value>
                                                         </Condition>
                                                     </MultiTrigger.Conditions>
-                                                    <Setter Property="Panel.Background" TargetName="Bd">
-                                                        <Setter.Value>
-                                                            <SolidColorBrush>#e0e0e0</SolidColorBrush>
-                                                        </Setter.Value>
+                                                    <Setter Property="Panel.Background"
+                                                            TargetName="Bd"
+                                                            Value="{StaticResource AlternatingBackgroundSelected}">
                                                     </Setter>
                                                 </MultiTrigger>
                                                 <Trigger Property="UIElement.IsEnabled">
@@ -331,10 +344,10 @@
                                 </Setter>
                                 <Style.Triggers>
                                     <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                                        <Setter Property="Background" Value="#f0f0f0" />
+                                        <Setter Property="Background" Value="{StaticResource AlternatingBackground1}" />
                                     </Trigger>
                                     <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                                        <Setter Property="Background" Value="#f8f8f8" />
+                                        <Setter Property="Background" Value="{StaticResource AlternatingBackground2}" />
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
@@ -382,7 +395,14 @@
                                             <RowDefinition />
                                             <RowDefinition />
                                         </Grid.RowDefinitions>
-                                        <TextBlock Text="{Binding Name}" FontSize="16" Margin="0,0,0,5" Grid.Row="0" />
+                                        <Grid Grid.Row="0" Margin="0,0,0,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="#" Foreground="#5F5F5F" FontSize="16" Grid.Column="0" />
+                                            <TextBlock Text="{Binding Name}" FontSize="16" Grid.Column="1" />
+                                        </Grid>
                                         <TextBlock Text="{Binding Description}" Foreground="#5F5F5F" Grid.Row="1" />
                                     </Grid>
                                 </ContentControl>
@@ -431,10 +451,9 @@
                                                             <Condition.Value>True</Condition.Value>
                                                         </Condition>
                                                     </MultiTrigger.Conditions>
-                                                    <Setter Property="Panel.Background" TargetName="Bd">
-                                                        <Setter.Value>
-                                                            <SolidColorBrush>#e8e8e8</SolidColorBrush>
-                                                        </Setter.Value>
+                                                    <Setter Property="Panel.Background"
+                                                            TargetName="Bd"
+                                                            Value="{StaticResource AlternatingBackgroundHover}">
                                                     </Setter>
                                                 </MultiTrigger>
                                                 <MultiTrigger>
@@ -446,10 +465,9 @@
                                                             <Condition.Value>True</Condition.Value>
                                                         </Condition>
                                                     </MultiTrigger.Conditions>
-                                                    <Setter Property="Panel.Background" TargetName="Bd">
-                                                        <Setter.Value>
-                                                            <SolidColorBrush>#e0e0e0</SolidColorBrush>
-                                                        </Setter.Value>
+                                                    <Setter Property="Panel.Background"
+                                                            TargetName="Bd"
+                                                            Value="{StaticResource AlternatingBackgroundSelected}">
                                                     </Setter>
                                                 </MultiTrigger>
                                                 <MultiTrigger>
@@ -461,10 +479,9 @@
                                                             <Condition.Value>True</Condition.Value>
                                                         </Condition>
                                                     </MultiTrigger.Conditions>
-                                                    <Setter Property="Panel.Background" TargetName="Bd">
-                                                        <Setter.Value>
-                                                            <SolidColorBrush>#e0e0e0</SolidColorBrush>
-                                                        </Setter.Value>
+                                                    <Setter Property="Panel.Background"
+                                                            TargetName="Bd"
+                                                            Value="{StaticResource AlternatingBackgroundSelected}">
                                                     </Setter>
                                                 </MultiTrigger>
                                                 <Trigger Property="UIElement.IsEnabled">
@@ -481,10 +498,10 @@
                                 </Setter>
                                 <Style.Triggers>
                                     <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                                        <Setter Property="Background" Value="#f0f0f0" />
+                                        <Setter Property="Background" Value="{StaticResource AlternatingBackground1}" />
                                     </Trigger>
                                     <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                                        <Setter Property="Background" Value="#f8f8f8" />
+                                        <Setter Property="Background" Value="{StaticResource AlternatingBackground1}" />
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
@@ -601,10 +618,9 @@
                                                             <Condition.Value>True</Condition.Value>
                                                         </Condition>
                                                     </MultiTrigger.Conditions>
-                                                    <Setter Property="Panel.Background" TargetName="Bd">
-                                                        <Setter.Value>
-                                                            <SolidColorBrush>#e8e8e8</SolidColorBrush>
-                                                        </Setter.Value>
+                                                    <Setter Property="Panel.Background"
+                                                            TargetName="Bd"
+                                                            Value="{StaticResource AlternatingBackgroundHover}">
                                                     </Setter>
                                                 </MultiTrigger>
                                                 <MultiTrigger>
@@ -616,10 +632,9 @@
                                                             <Condition.Value>True</Condition.Value>
                                                         </Condition>
                                                     </MultiTrigger.Conditions>
-                                                    <Setter Property="Panel.Background" TargetName="Bd">
-                                                        <Setter.Value>
-                                                            <SolidColorBrush>#e0e0e0</SolidColorBrush>
-                                                        </Setter.Value>
+                                                    <Setter Property="Panel.Background"
+                                                            TargetName="Bd"
+                                                            Value="{StaticResource AlternatingBackgroundSelected}">
                                                     </Setter>
                                                 </MultiTrigger>
                                                 <MultiTrigger>
@@ -631,10 +646,9 @@
                                                             <Condition.Value>True</Condition.Value>
                                                         </Condition>
                                                     </MultiTrigger.Conditions>
-                                                    <Setter Property="Panel.Background" TargetName="Bd">
-                                                        <Setter.Value>
-                                                            <SolidColorBrush>#e0e0e0</SolidColorBrush>
-                                                        </Setter.Value>
+                                                    <Setter Property="Panel.Background"
+                                                            TargetName="Bd"
+                                                            Value="{StaticResource AlternatingBackgroundSelected}">
                                                     </Setter>
                                                 </MultiTrigger>
                                                 <Trigger Property="UIElement.IsEnabled">
