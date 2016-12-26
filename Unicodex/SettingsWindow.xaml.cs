@@ -28,7 +28,7 @@ namespace Unicodex
         public SettingsWindow()
         {
             InitializeComponent();
-            DataContext = Settings.Default.Preferences;
+            DataContext = ((App)Application.Current).Preferences;
         }
 
         private void globalHotkeyNonModifier_PreviewKeyDown(object sender, KeyEventArgs e)

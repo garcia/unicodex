@@ -1,6 +1,4 @@
-﻿- tags tab
-- tweak favorites tab
-- investigate performance issues for long non-matching queries
+﻿- tweak favorites tab
 - investigate window not being raised to front in some cases (usually [always?] involves the Visual Studio window)
 - investigate window not closing after losing focus (same conditions as above)
 - partial tag matches

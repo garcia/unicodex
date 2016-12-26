@@ -26,7 +26,7 @@ namespace Unicodex
         {
             InitializeComponent();
 
-            IEnumerable<Model.Tag> currentTags = Settings.Default.UserTags.GetTags(c.ModelObject.CodepointHex);
+            IEnumerable<Model.Tag> currentTags = ((App)Application.Current).UserTags.GetTags(c.ModelObject.CodepointHex);
             string header = $"Editing tags for {c.Name}. Enter one tag per line.\nSome tags are built-in; these can be turned off in your Preferences.";
             string tagData = string.Join(Environment.NewLine, currentTags);
             this.DataContext = new EditTagsData(c, header, tagData);
@@ -41,18 +41,19 @@ namespace Unicodex
         {
             if (!(bool)e.NewValue)
             {
+                UserTags userTags = ((App)Application.Current).UserTags;
                 EditTagsData data = (EditTagsData)this.DataContext;
                 Character c = data.Character;
                 string tagData = data.TagData;
 
                 /* Make a copy of the old tags since we will be iteratively
                  * removing them, thus changing the list it returns. */
-                List<View.Tag> oldTags = Model.Tag.ToView(Settings.Default.UserTags.GetTags(c.ModelObject.CodepointHex));
+                List<View.Tag> oldTags = Model.Tag.ToView(userTags.GetTags(c.ModelObject.CodepointHex));
                 string[] newTags = tagData.Split(new[] { '\r', '\n'}, StringSplitOptions.RemoveEmptyEntries);
                 
                 foreach (Tag oldTag in oldTags)
                 {
-                    Settings.Default.UserTags.RemoveTag(c.ModelObject.CodepointHex, oldTag.Name);
+                    userTags.RemoveTag(c.ModelObject.CodepointHex, oldTag.Name);
                 }
                 foreach (string newTag in newTags)
                 {
@@ -61,7 +62,7 @@ namespace Unicodex
                         .Replace("\"", "")
                         .Replace("\r", "")
                         .Replace("\n", "");
-                    Settings.Default.UserTags.AddTag(c.ModelObject.CodepointHex, sanitizedTag);
+                    userTags.AddTag(c.ModelObject.CodepointHex, sanitizedTag);
                 }
 
                 Settings.Default.Save();

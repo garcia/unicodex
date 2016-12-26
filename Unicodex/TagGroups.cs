@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Xml.Serialization;
 using Unicodex.Model;
 using Unicodex.Properties;
@@ -113,12 +114,7 @@ namespace Unicodex
 
         public TagGroups(Characters characters)
         {
-            if (Settings.Default.UserTags == null)
-            {
-                Settings.Default.UserTags = new UserTags();
-            }
-            UserTags = Settings.Default.UserTags;
-
+            UserTags = ((App)Application.Current).UserTags;
             BlockTags = new BlockTags(characters);
             CategoryTags = new CategoryTags(characters);
             EmojiTags = new EmojiTags();
@@ -209,7 +205,7 @@ namespace Unicodex
 
         public override bool IsEnabled()
         {
-            return Settings.Default.Preferences.builtInTagsBlock;
+            return ((App)Application.Current).Preferences.builtInTagsBlock;
         }
     }
 
@@ -227,7 +223,7 @@ namespace Unicodex
 
         public override bool IsEnabled()
         {
-            return Settings.Default.Preferences.builtInTagsCategory;
+            return ((App)Application.Current).Preferences.builtInTagsCategory;
         }
     }
 
@@ -237,7 +233,7 @@ namespace Unicodex
 
         public override bool IsEnabled()
         {
-            return Settings.Default.Preferences.builtInTagsEmoji;
+            return ((App)Application.Current).Preferences.builtInTagsEmoji;
         }
     }
 
@@ -247,7 +243,7 @@ namespace Unicodex
 
         public override bool IsEnabled()
         {
-            return Settings.Default.Preferences.builtInTagsAlias;
+            return ((App)Application.Current).Preferences.builtInTagsAlias;
         }
     }
 }

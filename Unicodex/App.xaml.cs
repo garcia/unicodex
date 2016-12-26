@@ -14,6 +14,12 @@ namespace Unicodex
     /// </summary>
     public partial class App : Application
     {
+        /* Store references to settings outside of Settings.Default since
+         * settings accesses are expensive: */
+        public Preferences Preferences { get; private set; }
+        public Favorites Favorites { get; private set; }
+        public UserTags UserTags { get; private set; }
+
         public Characters Characters { get; private set; }
         public TagGroups TagGroups { get; private set; }
 
@@ -31,6 +37,15 @@ namespace Unicodex
                 Settings.Default.Favorites = new Favorites();
             }
 
+            if (Settings.Default.UserTags == null)
+            {
+                Settings.Default.UserTags = new UserTags();
+            }
+
+            Preferences = Settings.Default.Preferences;
+            Favorites = Settings.Default.Favorites;
+            UserTags = Settings.Default.UserTags;
+
             Characters = new Characters();
             TagGroups = new TagGroups(Characters);
         }
@@ -47,7 +62,7 @@ namespace Unicodex
             {
                 string keyName = "Unicodex";
                 bool currentRunOnStartupValue = runKey.GetValue(keyName) != null;
-                bool newRunOnStartupValue = Settings.Default.Preferences.runOnStartup;
+                bool newRunOnStartupValue = Preferences.runOnStartup;
 
                 if (currentRunOnStartupValue != newRunOnStartupValue)
                 {
@@ -68,12 +83,12 @@ namespace Unicodex
             IntPtr hWnd = getMainWindowHwnd();
 
             int modifiers = Win32.MOD_NOREPEAT;
-            if (Settings.Default.Preferences.globalHotkeyCtrl) modifiers |= Win32.MOD_CONTROL;
-            if (Settings.Default.Preferences.globalHotkeyAlt) modifiers |= Win32.MOD_ALT;
-            if (Settings.Default.Preferences.globalHotkeyShift) modifiers |= Win32.MOD_SHIFT;
-            if (Settings.Default.Preferences.globalHotkeyWin) modifiers |= Win32.MOD_WIN;
+            if (Preferences.globalHotkeyCtrl) modifiers |= Win32.MOD_CONTROL;
+            if (Preferences.globalHotkeyAlt) modifiers |= Win32.MOD_ALT;
+            if (Preferences.globalHotkeyShift) modifiers |= Win32.MOD_SHIFT;
+            if (Preferences.globalHotkeyWin) modifiers |= Win32.MOD_WIN;
 
-            int vk = KeyInterop.VirtualKeyFromKey(Settings.Default.Preferences.globalHotkeyNonModifier);
+            int vk = KeyInterop.VirtualKeyFromKey(Preferences.globalHotkeyNonModifier);
 
             Win32.UnregisterHotKey(hWnd, 0);
             if (!Win32.RegisterHotKey(hWnd, 0, modifiers, vk))

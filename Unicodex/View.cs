@@ -28,7 +28,7 @@ namespace Unicodex.View
         {
             get
             {
-                return Settings.Default.Favorites.IsFavorite(ModelObject.CodepointHex);
+                return ((App)Application.Current).Favorites.IsFavorite(ModelObject.CodepointHex);
             }
 
             set
@@ -36,11 +36,11 @@ namespace Unicodex.View
                 bool changed;
                 if (value)
                 {
-                    changed = Settings.Default.Favorites.AddFavorite(ModelObject.CodepointHex);
+                    changed = ((App)Application.Current).Favorites.AddFavorite(ModelObject.CodepointHex);
                 }
                 else
                 {
-                    changed = Settings.Default.Favorites.RemoveFavorite(ModelObject.CodepointHex);
+                    changed = ((App)Application.Current).Favorites.RemoveFavorite(ModelObject.CodepointHex);
                 }
                 if (changed)
                 {

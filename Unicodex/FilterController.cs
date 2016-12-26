@@ -102,7 +102,7 @@ namespace Unicodex.Controller
         public SearchController(MainWindow window) : base(window, window.SearchResults, window.SearchTextBox)
         {
             Filter = new Filter<Model.Character>(new Cache<Model.Character>[] {
-                new FavoritesCache(Properties.Settings.Default.Favorites),
+                new FavoritesCache(((App)Application.Current).Favorites),
                 new TagsCache(((App)Application.Current).TagGroups),
                 new AllWordsCache<Model.Character>(),
                 new FirstLetterOfAllWordsCache<Model.Character>(),
@@ -171,7 +171,7 @@ namespace Unicodex.Controller
     {
         public FavoritesController(MainWindow window) : base(window, window.FavoritesResults, window.FavoritesTextBox)
         {
-            Properties.Settings.Default.Favorites.CollectionChanged += Favorites_CollectionChanged;
+            ((App)Application.Current).Favorites.CollectionChanged += Favorites_CollectionChanged;
             Initialize();
         }
 
@@ -200,7 +200,7 @@ namespace Unicodex.Controller
             });
             Filter.ReturnAllCharactersOnEmptyQuery = true;
 
-            foreach (string codepointHex in Properties.Settings.Default.Favorites.FavoriteSet)
+            foreach (string codepointHex in ((App)Application.Current).Favorites.FavoriteSet)
             {
                 Filter.Add(((App)Application.Current).Characters.AllCharactersByCodepointHex[codepointHex]);
             }

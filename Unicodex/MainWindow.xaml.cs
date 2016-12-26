@@ -134,9 +134,9 @@ namespace Unicodex
             {
                 /* Window is becoming visible - spawn it according to the
                  * user's preferences */
-                if (!Settings.Default.Preferences.spawnNearTextCaret || !putNearTextCaret())
+                if (!((App)Application.Current).Preferences.spawnNearTextCaret || !putNearTextCaret())
                 {
-                    var spawnPlacement = Settings.Default.Preferences.spawnPlacement;
+                    var spawnPlacement = ((App)Application.Current).Preferences.spawnPlacement;
                     switch (spawnPlacement)
                     {
                         case SpawnPlacement.SPAWN_NEAR_CURSOR:
@@ -185,8 +185,8 @@ namespace Unicodex
                     bool success2 = Win32.GetWindowRect(gui.hwndActive, ref windowRect);
                     if (success2)
                     {
-                        var windowPlacement = Settings.Default.Preferences.windowPlacement;
-                        var insideOutsidePlacement = Settings.Default.Preferences.insideOutsidePlacement;
+                        var windowPlacement = ((App)Application.Current).Preferences.windowPlacement;
+                        var insideOutsidePlacement = ((App)Application.Current).Preferences.insideOutsidePlacement;
                         WindowUtils.PutWindowNear(this, windowRect.asRect(), windowPlacement, insideOutsidePlacement);
                     }
                 }
@@ -234,7 +234,7 @@ namespace Unicodex
                 rect = new Rect(left, top, 0, 0);
             }
 
-            PlacementSide monitorPlacement = Settings.Default.Preferences.monitorPlacement;
+            PlacementSide monitorPlacement = ((App)Application.Current).Preferences.monitorPlacement;
             WindowUtils.PutWindowNear(this, WindowUtils.MonitorWorkAreaFromRect(rect), monitorPlacement, PlacementInOut.INSIDE);
             
         }

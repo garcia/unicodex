@@ -76,7 +76,7 @@ namespace Unicodex
                 {
                     results.Add(cacheHit);
                     seenItems.Add(cacheHit);
-                    if (results.Count >= Settings.Default.Preferences.maxSearchResults) break;
+                    if (results.Count >= ((App)Application.Current).Preferences.maxSearchResults) break;
                 }
             }
 
