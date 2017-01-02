@@ -501,7 +501,7 @@
                                         <Setter Property="Background" Value="{StaticResource AlternatingBackground1}" />
                                     </Trigger>
                                     <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                                        <Setter Property="Background" Value="{StaticResource AlternatingBackground1}" />
+                                        <Setter Property="Background" Value="{StaticResource AlternatingBackground2}" />
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
