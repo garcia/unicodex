@@ -56,6 +56,8 @@ namespace Unicodex
         }
     }
 
+    /* Find character by exact match of its whole name.  Most useful for finding
+     * characters with short names, e.g. U+15F25 'FIRE'. */
     class NameCache<T> : Cache<T> where T : SplitString
     {
         public override IEnumerable<string> GetKeys(SplitString s)
@@ -64,6 +66,7 @@ namespace Unicodex
         }
     }
 
+    /* Find character by exact match of the first word in its name. */
     class FirstWordCache<T> : Cache<T> where T : SplitString
     {
         public override IEnumerable<string> GetKeys(SplitString s)
@@ -72,6 +75,7 @@ namespace Unicodex
         }
     }
 
+    /* Find character by exact match of any word in its name. */
     class AllWordsCache<T> : Cache<T> where T : SplitString
     {
         public override IEnumerable<string> GetKeys(SplitString s)
@@ -83,6 +87,7 @@ namespace Unicodex
         }
     }
 
+    /* Find character by partial match of the first word in its name. */
     class FirstLetterOfFirstWordCache<T> : Cache<T> where T : SplitString
     {
         public override IEnumerable<string> GetKeys(SplitString s)
@@ -96,6 +101,9 @@ namespace Unicodex
         }
     }
 
+    /* Find a character by partial match of any word in its name. This is the
+     * primary search mechanism and should be carefully optimized to deal with
+     * large numbers of cache hits. */
     class FirstLetterOfAllWordsCache<T> : Cache<T> where T : SplitString
     {
         public override IEnumerable<string> GetKeys(SplitString s)
@@ -136,6 +144,7 @@ namespace Unicodex
         }
     }
 
+    /* Find character by its hexadecimal codepoint. */
     class CodepointCache : Cache<Character>
     {
         public override IEnumerable<string> GetKeys(SplitString s)
@@ -155,6 +164,9 @@ namespace Unicodex
         }
     }
 
+    /* Find favorited character by partial match of any word in its name.
+     * Very similar to FirstLetterOfAllWordsCache, but restricted to favorites
+     * for prioritization. */
     class FavoritesCache : Cache<Character>
     {
         private Favorites favorites;
@@ -181,6 +193,8 @@ namespace Unicodex
         }
     }
 
+    /* Find character by its tags.
+     * TODO: support partial matches. */
     class TagsCache : Cache<Character>
     {
         private TagGroups tagGroups;
