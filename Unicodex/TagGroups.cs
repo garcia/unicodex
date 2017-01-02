@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Xml;
 using System.Xml.Serialization;
 using Unicodex.Model;
 using Unicodex.Properties;
@@ -117,7 +118,7 @@ namespace Unicodex
             UserTags = ((App)Application.Current).UserTags;
             BlockTags = new BlockTags(characters);
             CategoryTags = new CategoryTags(characters);
-            EmojiTags = new EmojiTags();
+            EmojiTags = new EmojiTags(characters);
             AliasTags = new AliasTags();
 
             AllTags = new TagGroup[] { BlockTags, CategoryTags, EmojiTags, AliasTags, UserTags };
@@ -230,6 +231,52 @@ namespace Unicodex
     public class EmojiTags : TagGroup
     {
         public override string Source { get { return "Emoji"; } }
+
+        public EmojiTags(Characters characters) : base()
+        {
+            XmlDocument annotations = new XmlDocument();
+            annotations.LoadXml(Properties.Resources.annotations_en);
+            XmlNodeList annotationNodes = annotations.DocumentElement.SelectNodes("annotations/annotation");
+            foreach (XmlNode annotationNode in annotationNodes)
+            {
+                if (annotationNode.Attributes["type"] == null)
+                {
+                    string character = annotationNode.Attributes["cp"].Value;
+                    int codepoint;
+                    if (character.Length == 1)
+                    {
+                        codepoint = character[0];
+                    }
+                    else if (character.Length == 2 && char.IsHighSurrogate(character[0]))
+                    {
+                        codepoint = char.ConvertToUtf32(character[0], character[1]);
+                    }
+                    else
+                    {
+                        // Sequences aren't currently supported
+                        continue;
+                    }
+                    string codepointHex = codepoint.ToString("X4");
+
+                    // Only add annotations for characters that we know about
+                    if (characters.AllCharactersByCodepointHex.ContainsKey(codepointHex))
+                    {
+                        Character c = characters.AllCharactersByCodepointHex[codepointHex];
+                        AddTag(codepointHex, "emoji");
+
+                        string[] annotationNames = annotationNode.InnerText.Split('|');
+                        foreach (string annotationName in annotationNames)
+                        {
+                            // Skip annotations that are part of the character's name
+                            if (!c.NameWords.Contains(annotationName.ToUpper()))
+                            {
+                                AddTag(codepointHex, annotationName.Trim());
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         public override bool IsEnabled()
         {
