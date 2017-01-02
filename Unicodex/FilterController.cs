@@ -103,8 +103,8 @@ namespace Unicodex.Controller
         {
             Filter = new Filter<Model.Character>(new Cache<Model.Character>[] {
                 new FavoritesCache(((App)Application.Current).Favorites),
-                new TagsCache(((App)Application.Current).TagGroups),
                 new AllWordsCache<Model.Character>(),
+                new TagsCache(((App)Application.Current).TagGroups),
                 new FirstLetterOfAllWordsCache<Model.Character>(),
                 new CodepointCache()
             });

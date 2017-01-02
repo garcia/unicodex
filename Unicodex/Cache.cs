@@ -121,13 +121,16 @@ namespace Unicodex
         {
             foreach (string fragment in query.Split)
             {
+                bool foundMatch = false;
                 foreach (string nameWord in cacheHit.Split)
                 {
-                    if (!nameWord.StartsWith(fragment, StringComparison.OrdinalIgnoreCase))
+                    if (nameWord.StartsWith(fragment, StringComparison.OrdinalIgnoreCase))
                     {
-                        return false;
+                        foundMatch = true;
+                        break;
                     }
                 }
+                if (!foundMatch) return false;
             }
             return true;
         }
