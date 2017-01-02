@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Unicodex.Model;
 
@@ -103,6 +104,32 @@ namespace Unicodex
             {
                 yield return word[0].ToString();
             }
+        }
+
+        /* This Cache.Matches implementation doesn't defer to Query.Matches
+         * because the penalty for checking extraneous cache hits can be severe.
+         * For example, if the user types a query consisting of each letter as a
+         * word ("a b c d e..."), performance without this override degrades as
+         * nearly every character yields a cache hit.
+         * 
+         * The concern that a character might match a query for multiple reasons
+         * (perhaps one query fragment matches the character's name and another
+         * matches a tag) is valid - but only one cache needs to return a match
+         * in such cases. In this situation, FirstLetterOfAllWordsCache defers
+         * the responsibility to other caches to return the match. */
+        public override bool Matches(Query query, T cacheHit)
+        {
+            foreach (string fragment in query.Split)
+            {
+                foreach (string nameWord in cacheHit.Split)
+                {
+                    if (!nameWord.StartsWith(fragment, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
     }
 
