@@ -109,7 +109,6 @@ namespace Unicodex
         public TagGroup BlockTags { get; private set; }
         public TagGroup CategoryTags { get; private set; }
         public TagGroup EmojiTags { get; private set; }
-        public TagGroup AliasTags { get; private set; }
 
         private TagGroup[] AllTags;
 
@@ -119,9 +118,8 @@ namespace Unicodex
             BlockTags = new BlockTags(characters);
             CategoryTags = new CategoryTags(characters);
             EmojiTags = new EmojiTags(characters);
-            AliasTags = new AliasTags();
 
-            AllTags = new TagGroup[] { BlockTags, CategoryTags, EmojiTags, AliasTags, UserTags };
+            AllTags = new TagGroup[] { BlockTags, CategoryTags, EmojiTags, UserTags };
         }
 
         public List<string> GetCodepoints(string tag)
@@ -288,16 +286,6 @@ namespace Unicodex
         public override bool IsEnabled()
         {
             return ((App)Application.Current).Preferences.builtInTagsEmoji;
-        }
-    }
-
-    public class AliasTags : TagGroup
-    {
-        public override string Source { get { return "Built-in alias"; } }
-
-        public override bool IsEnabled()
-        {
-            return ((App)Application.Current).Preferences.builtInTagsAlias;
         }
     }
 }

@@ -31,7 +31,6 @@ namespace Unicodex
         public bool builtInTagsBlock { get; set; }
         public bool builtInTagsCategory { get; set; }
         public bool builtInTagsEmoji { get; set; }
-        public bool builtInTagsAlias { get; set; }
 
         public Preferences()
         {
@@ -50,7 +49,6 @@ namespace Unicodex
             builtInTagsBlock = true;
             builtInTagsCategory = false;
             builtInTagsEmoji = true;
-            builtInTagsAlias = true;
         }
     }
 

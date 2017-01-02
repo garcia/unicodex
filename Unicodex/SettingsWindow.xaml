@@ -169,8 +169,7 @@
                 </Grid.ColumnDefinitions>
                 <CheckBox Grid.Column="0" Margin="0,0,10,0" x:Name="builtInTagsBlock" Content="Blocks" IsChecked="{Binding builtInTagsBlock}" />
                 <CheckBox Grid.Column="1" Margin="0,0,10,0" x:Name="builtInTagsCategory" Content="Categories" IsChecked="{Binding builtInTagsCategory}" />
-                <CheckBox Grid.Column="2" Margin="0,0,10,0" x:Name="builtInTagsEmoji" Content="Emoji" IsChecked="{Binding builtInTagsEmoji}" />
-                <CheckBox Grid.Column="3" x:Name="builtInTagsAlias" Content="Aliases" IsChecked="{Binding builtInTagsAlias}" />
+                <CheckBox Grid.Column="2" x:Name="builtInTagsEmoji" Content="Emoji annotations" IsChecked="{Binding builtInTagsEmoji}" />
             </Grid>
         </GroupBox>
         <Button Name="saveAndClose" Content="Save &amp; Close" Grid.Row="4" HorizontalAlignment="Right" Padding="5,2" Click="saveAndClose_Click" />
