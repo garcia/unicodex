@@ -102,6 +102,7 @@ namespace Unicodex.Controller
         public SearchController(MainWindow window) : base(window, window.SearchResults, window.SearchTextBox)
         {
             Filter = new Filter<Model.Character>(new Cache<Model.Character>[] {
+                new NameCache<Model.Character>(),
                 new FavoritesCache(((App)Application.Current).Favorites),
                 new AllWordsCache<Model.Character>(),
                 new TagsCache(((App)Application.Current).TagGroups),
