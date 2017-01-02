@@ -68,6 +68,14 @@ namespace Unicodex
                 Settings.Default.Save();
             }
         }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            int left = System.Windows.Forms.Cursor.Position.X;
+            int top = System.Windows.Forms.Cursor.Position.Y;
+            UpdateLayout();
+            WindowUtils.PutWindowNear(this, new Rect(left, top, 0, 0), PlacementSide.CENTER, PlacementInOut.INSIDE);
+        }
     }
 
     public class EditTagsData

@@ -397,6 +397,12 @@ namespace Unicodex
         {
             Shutdown();
         }
+
+        private void NavButton_MenuItem_About_Click(object sender, RoutedEventArgs e)
+        {
+            AboutWindow aboutWindow = new AboutWindow();
+            aboutWindow.Show();
+        }
     }
 
 }

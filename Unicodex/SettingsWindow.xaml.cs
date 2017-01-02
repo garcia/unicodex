@@ -55,13 +55,6 @@ namespace Unicodex
                 Settings.Default.Save();
                 ((App)Application.Current).UpdateSettings();
             }
-            else
-            {
-                // Window is opening - put it near the cursor
-                int left = System.Windows.Forms.Cursor.Position.X;
-                int top = System.Windows.Forms.Cursor.Position.Y;
-                WindowUtils.PutWindowNear(this, new Rect(left, top, 0, 0), PlacementSide.CENTER, PlacementInOut.INSIDE);
-            }
         }
 
         private void windowPlacement_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -99,6 +92,14 @@ namespace Unicodex
             {
                 return false;
             }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            int left = System.Windows.Forms.Cursor.Position.X;
+            int top = System.Windows.Forms.Cursor.Position.Y;
+            UpdateLayout();
+            WindowUtils.PutWindowNear(this, new Rect(left, top, 0, 0), PlacementSide.CENTER, PlacementInOut.INSIDE);
         }
     }
 

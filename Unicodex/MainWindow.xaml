@@ -701,6 +701,7 @@
             <Button.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Settings" Click="NavButton_MenuItem_Settings_Click" />
+                    <MenuItem Header="About" Click="NavButton_MenuItem_About_Click" />
                     <MenuItem Header="Exit" Click="NavButton_MenuItem_Exit_Click" />
                 </ContextMenu>
             </Button.ContextMenu>
