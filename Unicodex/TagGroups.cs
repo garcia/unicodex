@@ -267,8 +267,14 @@ namespace Unicodex
                         string[] annotationNames = annotationNode.InnerText.Split('|');
                         foreach (string annotationName in annotationNames)
                         {
-                            string name = annotationName.Trim();
-                            // Skip annotations that are part of the character's name
+                            /* Transliterations of ideographic emoji are quoted
+                             * in the annotation data file, so remove the
+                             * quotation marks in addition to any whitespace. */
+                            string name = annotationName.Trim(' ', '“', '”');
+                            
+                            /* For brevity, skip annotations that are part of
+                             * the character's name - they don't make it any
+                             * easier to find. */
                             if (!c.NameWords.Contains(name.ToUpper()))
                             {
                                 AddTag(codepointHex, name);
