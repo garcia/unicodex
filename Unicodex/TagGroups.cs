@@ -267,10 +267,11 @@ namespace Unicodex
                         string[] annotationNames = annotationNode.InnerText.Split('|');
                         foreach (string annotationName in annotationNames)
                         {
+                            string name = annotationName.Trim();
                             // Skip annotations that are part of the character's name
-                            if (!c.NameWords.Contains(annotationName.ToUpper()))
+                            if (!c.NameWords.Contains(name.ToUpper()))
                             {
-                                AddTag(codepointHex, annotationName.Trim());
+                                AddTag(codepointHex, name);
                             }
                         }
                     }
