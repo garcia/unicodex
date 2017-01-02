@@ -211,10 +211,6 @@ namespace Unicodex.Model
                     Character c = s as Character;
                     if (c != null)
                     {
-                        // This query fragment doesn't match the character name.
-                        // Check the codepoint:
-                        if (c.CodepointHex == queryFragment) continue;
-
                         // Check the tags:
                         List<Tag> tags = ((App)Application.Current).TagGroups.GetTags(c.CodepointHex);
                         bool foundMatchingTag = false;
