@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Unicodex"
         mc:Ignorable="d"
         Title="Edit tags"
+        Icon="./Resources/Icons/main.ico"
         SizeToContent="WidthAndHeight"
         IsVisibleChanged="Window_IsVisibleChanged"
         Loaded="Window_Loaded">

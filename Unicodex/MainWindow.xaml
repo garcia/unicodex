@@ -7,6 +7,7 @@
         xmlns:local="clr-namespace:Unicodex"
         mc:Ignorable="d"
         Title="Unicodex"
+        Icon="./Resources/Icons/main.ico"
         PreviewKeyDown="Window_PreviewKeyDown"
         IsVisibleChanged="Window_IsVisibleChanged"
         Deactivated="Window_Deactivated"
@@ -92,11 +93,11 @@
                                 <Setter Property="TextBlock.Foreground" Value="#606060"/>
                             </Trigger>
                             <Trigger Property="IsChecked" Value="False">
-                                <Setter Property="Content" Value="&#xE734;" />
+                                <Setter Property="Content" Value="&#xE24A;" />
                             </Trigger>
                             <Trigger Property="IsChecked" Value="True">
                                 <Setter Property="TextBlock.Foreground" Value="{x:Static SystemColors.MenuHighlightBrush}" />
-                                <Setter Property="Content" Value="&#xE735;" />
+                                <Setter Property="Content" Value="&#xE249;" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -227,17 +228,17 @@
                                             <ContextMenu>
                                                 <MenuItem x:Name="CopyToClipboard" Header="Copy to clipboard" Click="Search_MenuItem_CopyToClipboard_Click">
                                                     <MenuItem.Icon>
-                                                        <TextBlock Text="&#xE8C8;" Style="{StaticResource IconStyle}" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" />
+                                                        <TextBlock Text="&#xE16F;" Style="{StaticResource IconStyle}" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
                                                 <MenuItem x:Name="MarkAsFavorite" Header="Mark as favorite" Click="Search_MenuItem_MarkAsFavorite_Click">
                                                     <MenuItem.Icon>
-                                                        <TextBlock Text="&#xE734;" Style="{StaticResource IconStyle}" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" />
+                                                        <TextBlock Text="&#xE24A;" Style="{StaticResource IconStyle}" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
                                                 <MenuItem x:Name="EditTags" Header="Edit tags" Click="Search_MenuItem_EditTags_Click">
                                                     <MenuItem.Icon>
-                                                        <TextBlock Text="&#xE8EC;" Style="{StaticResource IconStyle}" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" />
+                                                        <TextBlock Text="&#xE1CB;" Style="{StaticResource IconStyle}" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
                                             </ContextMenu>
@@ -380,7 +381,7 @@
             <TabItem x:Name="TagsTab" Style="{StaticResource TabHeaderNormalStyle}">
                 <TabItem.Header>
                     <StackPanel Style="{StaticResource TabHeaderStackPanelStyle}">
-                        <TextBlock Text="&#xE8EC;" Style="{StaticResource TabHeaderIconStyle}" />
+                        <TextBlock Text="&#xE1CB;" Style="{StaticResource TabHeaderIconStyle}" />
                         <TextBlock Text="Tags" Grid.Row="2" Style="{StaticResource TabHeaderTextStyle}" />
                     </StackPanel>
                 </TabItem.Header>
@@ -534,7 +535,7 @@
             <TabItem x:Name="FavoritesTab" Style="{StaticResource TabHeaderNormalStyle}">
                 <TabItem.Header>
                     <StackPanel Style="{StaticResource TabHeaderStackPanelStyle}">
-                        <TextBlock Text="&#xE734;" Style="{StaticResource TabHeaderIconStyle}" />
+                        <TextBlock Text="&#xE24A;" Style="{StaticResource TabHeaderIconStyle}" />
                         <TextBlock Text="Favorites" Grid.Row="2" Style="{StaticResource TabHeaderTextStyle}" />
                     </StackPanel>
                 </TabItem.Header>
@@ -698,7 +699,7 @@
             Cursor="Hand"
             Click="navButton_Click"
             ContextMenuService.IsEnabled="False">
-            <TextBlock Text="&#xE700;" Style="{StaticResource TabHeaderIconStyle}" Margin="15,10,15,9" />
+            <TextBlock Text="&#xE115;" Style="{StaticResource TabHeaderIconStyle}" Margin="15,10,15,9" />
             <Button.Resources>
                 <Style TargetType="{x:Type Button}">
                     <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True" />

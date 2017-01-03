@@ -6,7 +6,9 @@
         xmlns:local="clr-namespace:Unicodex"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
-        Title="About" Height="300" Width="300">
+        Title="About"
+        Icon="./Resources/Icons/main.ico"
+        Height="300" Width="300">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

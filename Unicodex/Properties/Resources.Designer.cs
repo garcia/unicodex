@@ -63,7 +63,7 @@ namespace Unicodex.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
         ///&lt;!DOCTYPE ldml SYSTEM &quot;ldml.dtd&quot;&gt;
-        ///&lt;!-- Copyright Â© 1991-2016 Unicode, Inc.
+        ///&lt;!-- Copyright © 1991-2016 Unicode, Inc.
         ///For terms of use, see http://www.unicode.org/copyright.html
         ///Unicode and the Unicode Logo are registered trademarks of Unicode, Inc. in the U.S. and other countries.
         ///CLDR data files are interpreted according to the LDML specification (http://unicode.org/reports/tr35/)
@@ -73,7 +73,7 @@ namespace Unicodex.Properties {
         ///&lt;ldml&gt;
         ///	&lt;identity&gt;
         ///		&lt;version number=&quot;$Revision: 12999 $&quot;/&gt;
-        /// [rest of string was truncated]&quot;;.
+        ///	 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string annotations_en {
             get {

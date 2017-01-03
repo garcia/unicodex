@@ -1,35 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="*" Name="Unicodex" Language="1033" Version="0.1.0.0" Manufacturer="garcia.sh" UpgradeCode="f0aa75d7-1e4e-48db-94d3-04caa94225b8">
-    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+  <Product Id="*"
+           Name="Unicodex"
+           Language="1033"
+           Version="0.9.0.0"
+           Manufacturer="g. garcia"
+           UpgradeCode="f0aa75d7-1e4e-48db-94d3-04caa94225b8">
+    <Package InstallerVersion="200"
+             Compressed="yes"
+             InstallScope="perMachine" />
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of Unicodex is already installed." />
     <MediaTemplate />
 
-    <Feature Id="ProductFeature" Title="Unicodex" Level="1">
-      <ComponentGroupRef Id="ProductComponents" />
-    </Feature>
-  </Product>
-
-  <Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
         <Directory Id="INSTALLFOLDER" Name="Unicodex" />
       </Directory>
     </Directory>
-  </Fragment>
 
-  <Fragment>
+    <Feature Id="ProductFeature" Title="Unicodex" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+    </Feature>
+
+    <UI>
+      <UIRef Id="WixUI_Minimal" />
+      <UIRef Id="WixUI_ErrorProgressText" />
+      <Publish Dialog="ExitDialog"
+               Control="Finish"
+               Event="DoAction"
+               Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
+    </UI>
+
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch Unicodex" />
+    <Property Id="WixShellExecTarget" Value="[#Unicodex.exe]" />
+    <CustomAction Id="LaunchApplication"
+                  BinaryKey="WixCA"
+                  DllEntry="WixShellExec"
+                  Impersonate="yes" />
+    
     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-      <Component Id="ProductComponent">
-        <File Source="$(var.Unicodex.TargetPath)" />
-      </Component>
-      <Component Id="ProductConfigComponent">
+      <Component Id="ProductComponent" Guid="DA6A9934-C59A-4DD5-B720-DA5A9F4EA4CD">
+        <File Id="Unicodex.exe" Source="$(var.Unicodex.TargetPath)" />
         <File Source="$(var.Unicodex.TargetPath).config" />
-      </Component>
-      <Component Id="ProductShellDllComponent">
         <File Source="$(var.Unicodex.TargetDir)Microsoft.Windows.Shell.dll" />
+        <RegistryValue Id="Autostart.rst" Root="HKMU" Action="write"
+               KeyPath="yes"
+               Key="Software\Microsoft\Windows\CurrentVersion\Run"
+               Name="Unicodex"
+               Value="[#Unicodex.exe]"
+               Type="string" />
       </Component>
     </ComponentGroup>
-  </Fragment>
+  </Product>
 </Wix>

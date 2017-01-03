@@ -7,6 +7,7 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="Settings"
+        Icon="./Resources/Icons/main.ico"
         IsVisibleChanged="Window_IsVisibleChanged"
         Loaded="Window_Loaded"
         SizeToContent="WidthAndHeight">
