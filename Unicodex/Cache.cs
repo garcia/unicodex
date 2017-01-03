@@ -222,4 +222,32 @@ namespace Unicodex
             }
         }
     }
+
+    class FirstLetterOfTagsCache : Cache<Character>
+    {
+        private TagGroups tagGroups;
+
+        public FirstLetterOfTagsCache(TagGroups tagGroups) : base()
+        {
+            this.tagGroups = tagGroups;
+        }
+
+        public override IEnumerable<string> GetKeys(SplitString s)
+        {
+            Character c = (Character)s;
+            List<Tag> tags = tagGroups.GetTags(c.CodepointHex);
+            foreach (Tag tag in tags)
+            {
+                yield return tag.TagName[0].ToString().ToUpper();
+            }
+        }
+
+        public override IEnumerable<string> GetQueryKeys(SplitString s)
+        {
+            foreach (string word in s.Split)
+            {
+                yield return word[0].ToString().ToUpper();
+            }
+        }
+    }
 }

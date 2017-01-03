@@ -20,7 +20,7 @@
     </shell:WindowChrome.WindowChrome>
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="Bool2VisibilityConverter" />
-        
+
         <SolidColorBrush x:Key="PrimaryForeground" Color="Black" />
         <SolidColorBrush x:Key="SecondaryForeground" Color="#5F5F5F" />
         <SolidColorBrush x:Key="TertiaryForeground" Color="#AFAFAF" />
@@ -28,7 +28,7 @@
         <SolidColorBrush x:Key="AlternatingBackground2" Color="#F8F8F8" />
         <SolidColorBrush x:Key="AlternatingBackgroundHover" Color="#E8E8E8" />
         <SolidColorBrush x:Key="AlternatingBackgroundSelected" Color="#E0E0E0" />
-        
+
         <Style TargetType="{x:Type TabItem}" x:Key="TabHeaderNormalStyle">
             <Setter Property="Template">
                 <Setter.Value>
@@ -267,6 +267,11 @@
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=SearchTextBox, Path=Text.Length, Mode=OneWay}" Value="0">
+                                        <Setter Property="ListView.Visibility" Value="Hidden" />
+                                    </DataTrigger>
+                                </Style.Triggers>
                             </Style>
                             <Style TargetType="{x:Type ListViewItem}">
                                 <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -353,6 +358,22 @@
                             </Style>
                         </ListView.Resources>
                     </ListView>
+                    <TextBlock Grid.Row="1" TextAlignment="Center" FontSize="18" Foreground="{StaticResource TertiaryForeground}" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="20">
+                        <TextBlock.Style>
+                            <Style>
+                                <Setter Property="TextBlock.Visibility" Value="Hidden" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=SearchTextBox, Path=Text.Length, Mode=OneWay}" Value="0">
+                                        <Setter Property="TextBlock.Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                        Start typing to search <LineBreak />
+                        ↑ / ↓ to navigate results <LineBreak />
+                        Enter to insert character <LineBreak />
+                        Ctrl+C to copy character
+                    </TextBlock>
                 </Grid>
             </TabItem>
 

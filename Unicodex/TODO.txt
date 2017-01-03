@@ -1,11 +1,8 @@
 ﻿- tweak favorites tab
-- investigate window not being raised to front in some cases (usually [always?] involves the Visual Studio window)
+- investigate window not being raised to front in some cases (usually involves either the Visual Studio window or being recently started?)
 - investigate window not closing after losing focus (same conditions as above)
-- partial tag matches
 - quoted string name matches
-- import emoji / alias data
 - organize source files
-- about window
 - app icon
 - package for distribution / installation
 	- launch on startup option

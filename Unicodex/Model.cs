@@ -216,7 +216,7 @@ namespace Unicodex.Model
                         bool foundMatchingTag = false;
                         foreach (Tag tag in tags)
                         {
-                            if (tag.TagName.ToUpper() == queryFragment.TrimStart('#'))
+                            if (tag.TagName.StartsWith(queryFragment.TrimStart('#'), StringComparison.OrdinalIgnoreCase))
                             {
                                 foundMatchingTag = true;
                                 break;

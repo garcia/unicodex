@@ -107,6 +107,7 @@ namespace Unicodex.Controller
                 new AllWordsCache<Model.Character>(),
                 new TagsCache(((App)Application.Current).TagGroups),
                 new FirstLetterOfAllWordsCache<Model.Character>(),
+                new FirstLetterOfTagsCache(((App)Application.Current).TagGroups),
                 new CodepointCache()
             });
 
