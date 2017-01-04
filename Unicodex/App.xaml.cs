@@ -48,6 +48,8 @@ namespace Unicodex
 
             Characters = new Characters();
             TagGroups = new TagGroups(Characters);
+
+            MainWindow = new MainWindow();
         }
 
         internal void UpdateSettings()
@@ -99,7 +101,9 @@ namespace Unicodex
 
         private IntPtr getMainWindowHwnd()
         {
-            return (IntPtr)new WindowInteropHelper(MainWindow).Handle.ToInt32();
+            var windowInteropHelper = new WindowInteropHelper(MainWindow);
+            windowInteropHelper.EnsureHandle();
+            return (IntPtr)windowInteropHelper.Handle.ToInt32();
         }
     }
 }

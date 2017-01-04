@@ -20,28 +20,32 @@ namespace Unicodex
         private FilterController<Model.Tag, View.Tag> tags;
 
         private System.Windows.Forms.NotifyIcon notifyIcon;
+        private bool startup = true;
 
         public MainWindow()
         {
             InitializeComponent();
             InitializeNotifyIcon();
+
+            Show();
+            Hide();
+
+            startup = false;
         }
 
-        protected override void OnSourceInitialized(EventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            base.OnSourceInitialized(e);
-
             // Create filter controllers
             search = new SearchController(this);
             favorites = new FavoritesController(this);
             tags = new TagsController(this);
 
+            // Register global hotkey
+            ((App)Application.Current).UpdateHotkey();
+
             // Add WndProc handler
             HwndSource source = PresentationSource.FromVisual(this) as HwndSource;
             source.AddHook(WndProc);
-
-            // Register global hotkey (has to be done after this window is created)
-            ((App)Application.Current).UpdateHotkey();
         }
 
         private void InitializeNotifyIcon()
@@ -50,6 +54,7 @@ namespace Unicodex
             notifyIcon = new System.Windows.Forms.NotifyIcon();
             notifyIcon.Icon = Properties.Resources.main;
             notifyIcon.Visible = true;
+            notifyIcon.Text = "Unicodex";
             notifyIcon.DoubleClick += delegate (object sender, EventArgs args)
             {
                 Show();
@@ -127,8 +132,17 @@ namespace Unicodex
             {
                 // Switch back to the search tab and clear the filter inputs
                 SearchTextBox.Text = string.Empty;
+                TagsTextBox.Text = string.Empty;
                 FavoritesTextBox.Text = string.Empty;
                 tabControl.SelectedIndex = 0;
+            }
+            else if (startup == true)
+            {
+                /* We have to briefly load the window on startup in order to
+                 * obtain an HwndSource, so put it somewhere where the user
+                 * won't be bothered by it. */
+                Left = -9999;
+                Top = -9999;
             }
             else
             {

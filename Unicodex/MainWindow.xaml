@@ -8,6 +8,8 @@
         mc:Ignorable="d"
         Title="Unicodex"
         Icon="./Resources/Icons/main.ico"
+        ShowInTaskbar="False"
+        Loaded="Window_Loaded"
         PreviewKeyDown="Window_PreviewKeyDown"
         IsVisibleChanged="Window_IsVisibleChanged"
         Deactivated="Window_Deactivated"

@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Unicodex")]
-[assembly: AssemblyCopyright("Copyright © Grant Garcia 2016")]
+[assembly: AssemblyCopyright("Copyright © G. Garcia 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
