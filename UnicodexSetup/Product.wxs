@@ -11,7 +11,9 @@
              InstallScope="perMachine" />
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of Unicodex is already installed." />
-    <MediaTemplate />
+    <MediaTemplate EmbedCab="yes" />
+
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.ProjectDir)\License.rtf" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
