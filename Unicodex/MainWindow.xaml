@@ -9,6 +9,7 @@
         Title="Unicodex"
         Icon="./Resources/Icons/main.ico"
         ShowInTaskbar="False"
+        Topmost="True"
         Loaded="Window_Loaded"
         PreviewKeyDown="Window_PreviewKeyDown"
         IsVisibleChanged="Window_IsVisibleChanged"
