@@ -30,6 +30,9 @@ namespace Unicodex
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
 
+        [DllImport("user32.dll")]
+        public static extern IntPtr SetFocus(HandleRef hWnd);
+
         [StructLayout(LayoutKind.Sequential)]
         public struct RECT
         {

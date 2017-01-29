@@ -167,10 +167,11 @@ namespace Unicodex
                 }
 
 
-                // Focus textbox once it's re-marked as visible
+                // Focus window & textbox once it's re-marked as visible
                 DependencyPropertyChangedEventHandler handler = null;
                 handler = delegate
                 {
+                    Win32.SetFocus(new HandleRef(this, GetHwnd()));
                     SearchTextBox.Focus();
                     SearchTextBox.IsVisibleChanged -= handler;
                 };
@@ -371,12 +372,17 @@ namespace Unicodex
         private void Shutdown()
         {
             // Unregister gloabl hotkey (probably not necessary, but as a formality...)
-            Win32.UnregisterHotKey((IntPtr)new WindowInteropHelper(Application.Current.MainWindow).Handle.ToInt32(), 0);
-            
+            Win32.UnregisterHotKey(GetHwnd(), 0);
+
             // Remove tray icon ASAP (otherwise will only disappear when user hovers over it)
             notifyIcon.Icon = null;
 
             Application.Current.Shutdown();
+        }
+
+        private static IntPtr GetHwnd()
+        {
+            return new WindowInteropHelper(Application.Current.MainWindow).Handle;
         }
 
         private void Search_MenuItem_CopyToClipboard_Click(object sender, RoutedEventArgs e)
