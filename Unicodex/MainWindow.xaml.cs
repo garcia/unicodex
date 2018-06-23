@@ -92,6 +92,7 @@ namespace Unicodex
             if (msg == Win32.WM_HOTKEY)
             {
                 Show();
+                Win32.SetForegroundWindow(hwnd);
             }
             return (IntPtr)0;
         }
