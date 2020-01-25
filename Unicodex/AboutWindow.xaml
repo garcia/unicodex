@@ -19,7 +19,7 @@
         <TextBlock x:Name="label" Text="Unicodex" HorizontalAlignment="Center" FontSize="36" FontFamily="Segoe UI Light" Margin="0,0,0,5"/>
         
         <TextBlock Grid.Row="1" HorizontalAlignment="Center" Margin="0,0,0,5">
-            v<Run Text="{Binding Version, Mode=OneWay}" />, by g. garcia
+            v<Run Text="{Binding Version, Mode=OneWay}" />, by Ash Garcia
         </TextBlock>
 
         <TextBlock Grid.Row="2" HorizontalAlignment="Center" Margin="0,0,0,5" TextAlignment="Center" VerticalAlignment="Center">

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
-	<Bundle Name="Unicodex" Version="1.0.0.0" Manufacturer="garcia.sh" UpgradeCode="b40ec59d-2434-4a22-a071-12cc39c591f7">
+	<Bundle Name="Unicodex" Version="1.0.0.0" Manufacturer="Ash Garcia" UpgradeCode="b40ec59d-2434-4a22-a071-12cc39c591f7">
     <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense">
       <bal:WixStandardBootstrapperApplication
         LicenseFile="license.rtf"
